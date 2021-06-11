@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:crud_table/crud_table.dart';
+import 'package:crud_table_example/models/user.dart';
+import 'package:crud_table_example/repository/user_repository.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,22 +13,20 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('CRUD example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: CRUDTable<UserModel>(
+            headerTitle: 'User',
+            isEditable: false,
+            repository: UserRepository(),
+            instance: () => const UserModel(),
+          ),
         ),
       ),
     );
