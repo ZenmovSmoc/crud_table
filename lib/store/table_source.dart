@@ -7,16 +7,29 @@ class DataSource<T extends DataModel> extends DataTableSource {
 
   final List<T> data;
 
-  int _selectedCount = 0;
-
   DateTime lastUpdateTime = DateTime.now();
+  late bool _isEditable;
+  late Function(DataModel) _editHandler;
+  late Function(DataModel) _deleteHandler;
+
+  set editHandler(Function(DataModel) handler) {
+    this._editHandler = handler;
+  }
+
+  set deleteHandler(Function(DataModel) handler) {
+    this._deleteHandler = handler;
+  }
+
+  set isEditable(bool editable) {
+    this._isEditable = editable;
+  }
 
   @override
   DataRow? getRow(int index) {
     assert(index >= 0);
 
     final DataModel item = data[index];
-    print(item);
+
     return DataRow.byIndex(
       index: index,
       cells: createDataCell(item),
@@ -30,7 +43,7 @@ class DataSource<T extends DataModel> extends DataTableSource {
   int get rowCount => data.length;
 
   @override
-  int get selectedRowCount => _selectedCount;
+  int get selectedRowCount => 0;
 
   List<DataCell> createDataCell(DataModel item) {
     List<DataCell> cells = [];
@@ -66,89 +79,90 @@ class DataSource<T extends DataModel> extends DataTableSource {
     );
 
     // add edit and delete button
-    // if (editable) {
-    //   cells.insert(
-    //     0,
-    //     DataCell(
-    //       IconButton(
-    //         icon: const Icon(Icons.edit),
-    //         onPressed: () {
-    //           editHandler(item);
-    //         },
-    //       ),
-    //     ),
-    //   );
-
-    //   cells.add(
-    //     DataCell(
-    //       IconButton(
-    //         icon: const Icon(Icons.delete),
-    //         onPressed: () {
-    //           deleteHandler(item);
-    //         },
-    //       ),
-    //     ),
-    //   );
-    // }
-
-    // ToDo: 更新時に
-    if (lastUpdateTime == null) {
-      cells.insert(
-        0,
+    if (_isEditable) {
+      cells.add(
         DataCell(
-          Text(''),
-        ),
-      );
-    } else if (map['createdAt'] != null &&
-        lastUpdateTime.isBefore(map['createdAt'])) {
-      cells.insert(
-        0,
-        DataCell(
-          Container(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-              child: Text(
-                'New Data',
-                style: TextStyle(color: Colors.white),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.edit, color: Colors.blue),
+                onPressed: () {
+                  _editHandler(item);
+                },
               ),
-            ),
-            decoration: BoxDecoration(
-              color: Colors.deepOrange,
-              borderRadius: BorderRadius.circular(8),
-            ),
+              const SizedBox(width: 2),
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () {
+                  _deleteHandler(item);
+                },
+              )
+            ],
           ),
-        ),
-      );
-    } else if (map['updatedAt'] != null &&
-        lastUpdateTime.isBefore(map['updatedAt'])) {
-      cells.insert(
-        0,
-        DataCell(
-          Container(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-              child: Text(
-                'Latest Update',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            decoration: BoxDecoration(
-              color: Colors.deepOrange,
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-        ),
-      );
-    } else {
-      cells.insert(
-        0,
-        DataCell(
-          Text(''),
         ),
       );
     }
+
+    // ToDo: 更新時に
+    // if (lastUpdateTime == null) {
+    //   cells.insert(
+    //     0,
+    //     DataCell(
+    //       Text(''),
+    //     ),
+    //   );
+    //   // } else if (map['createdAt'] != null &&
+    //   //     lastUpdateTime.isBefore(map['createdAt'])) {
+    //   //   cells.insert(
+    //   //     0,
+    //   //     DataCell(
+    //   //       Container(
+    //   //         child: Padding(
+    //   //           padding:
+    //   //               const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+    //   //           child: Text(
+    //   //             'New Data',
+    //   //             style: TextStyle(color: Colors.white),
+    //   //           ),
+    //   //         ),
+    //   //         decoration: BoxDecoration(
+    //   //           color: Colors.deepOrange,
+    //   //           borderRadius: BorderRadius.circular(8),
+    //   //         ),
+    //   //       ),
+    //   //     ),
+    //   //   );
+    //   // } else if (map['updatedAt'] != null &&
+    //   //     lastUpdateTime.isBefore(map['updatedAt'])) {
+    //   //   cells.insert(
+    //   //     0,
+    //   //     DataCell(
+    //   //       Container(
+    //   //         child: Padding(
+    //   //           padding:
+    //   //               const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+    //   //           child: Text(
+    //   //             'Latest Update',
+    //   //             style: TextStyle(color: Colors.white),
+    //   //           ),
+    //   //         ),
+    //   //         decoration: BoxDecoration(
+    //   //           color: Colors.deepOrange,
+    //   //           borderRadius: BorderRadius.circular(8),
+    //   //         ),
+    //   //       ),
+    //   //     ),
+    //   //   );
+    //   // }
+    // } else {
+    //   cells.insert(
+    //     0,
+    //     DataCell(
+    //       Text(''),
+    //     ),
+    //   );
+    // }
 
     return cells;
   }

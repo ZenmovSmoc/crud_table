@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
 
 part 'user.freezed.dart';
+part 'user.g.dart';
 
 @freezed
 class UserModel with _$UserModel, DataModel {
@@ -20,6 +21,9 @@ class UserModel with _$UserModel, DataModel {
     DateTime? updatedAt,
   }) = _UserModel;
 
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
+
   @override
   Map<String, Type> getCreateParamsList() {
     return {
@@ -33,6 +37,9 @@ class UserModel with _$UserModel, DataModel {
     return {
       'name': String,
       'email': String,
+      'nationality': String,
+      'tel': String,
+      'address': String,
       'createdAt': DateTime,
       'updatedAt': DateTime,
     };
@@ -48,6 +55,15 @@ class UserModel with _$UserModel, DataModel {
 
   @override
   Map<String, dynamic> toMap() {
-    return {};
+    return <String, dynamic>{
+      'name': this.name,
+      'tel': this.tel,
+      'email': this.email,
+      'address': this.address,
+      'nationality': this.nationality,
+      'fcmToken': this.fcmToken,
+      'createdAt': this.createdAt,
+      'updatedAt': this.updatedAt,
+    };
   }
 }

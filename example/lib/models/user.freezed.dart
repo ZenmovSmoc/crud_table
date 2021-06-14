@@ -12,6 +12,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
+UserModel _$UserModelFromJson(Map<String, dynamic> json) {
+  return _UserModel.fromJson(json);
+}
+
 /// @nodoc
 class _$UserModelTearOff {
   const _$UserModelTearOff();
@@ -38,6 +42,10 @@ class _$UserModelTearOff {
       updatedAt: updatedAt,
     );
   }
+
+  UserModel fromJson(Map<String, Object> json) {
+    return UserModel.fromJson(json);
+  }
 }
 
 /// @nodoc
@@ -55,6 +63,7 @@ mixin _$UserModel {
   DateTime? get createdAt => throw _privateConstructorUsedError;
   DateTime? get updatedAt => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $UserModelCopyWith<UserModel> get copyWith =>
       throw _privateConstructorUsedError;
@@ -218,7 +227,7 @@ class __$UserModelCopyWithImpl<$Res> extends _$UserModelCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$_UserModel extends _UserModel with DiagnosticableTreeMixin {
   const _$_UserModel(
       {this.docId,
@@ -231,6 +240,9 @@ class _$_UserModel extends _UserModel with DiagnosticableTreeMixin {
       this.createdAt,
       this.updatedAt})
       : super._();
+
+  factory _$_UserModel.fromJson(Map<String, dynamic> json) =>
+      _$_$_UserModelFromJson(json);
 
   @override
   final String? docId;
@@ -318,6 +330,11 @@ class _$_UserModel extends _UserModel with DiagnosticableTreeMixin {
   @override
   _$UserModelCopyWith<_UserModel> get copyWith =>
       __$UserModelCopyWithImpl<_UserModel>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$_$_UserModelToJson(this);
+  }
 }
 
 abstract class _UserModel extends UserModel {
@@ -332,6 +349,9 @@ abstract class _UserModel extends UserModel {
       DateTime? createdAt,
       DateTime? updatedAt}) = _$_UserModel;
   const _UserModel._() : super._();
+
+  factory _UserModel.fromJson(Map<String, dynamic> json) =
+      _$_UserModel.fromJson;
 
   @override
   String? get docId => throw _privateConstructorUsedError;

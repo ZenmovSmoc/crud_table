@@ -23,7 +23,7 @@ class _MyAppState extends State<MyApp> {
         body: Center(
           child: CRUDTable<UserModel>(
             headerTitle: 'User',
-            isEditable: false,
+            isEditable: true,
             repository: UserRepository(),
             instance: () => const UserModel(),
           ),

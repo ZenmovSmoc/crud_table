@@ -22,6 +22,8 @@ class _$TableStateTearOff {
       required bool sortAscending,
       required bool updateData,
       required bool loading,
+      String? filterBy,
+      String? filterText,
       DataSource<DataModel>? tableDataSource}) {
     return _TableState<T>(
       rowsPerPage: rowsPerPage,
@@ -29,6 +31,8 @@ class _$TableStateTearOff {
       sortAscending: sortAscending,
       updateData: updateData,
       loading: loading,
+      filterBy: filterBy,
+      filterText: filterText,
       tableDataSource: tableDataSource,
     );
   }
@@ -44,6 +48,8 @@ mixin _$TableState<T extends DataModel> {
   bool get sortAscending => throw _privateConstructorUsedError;
   bool get updateData => throw _privateConstructorUsedError;
   bool get loading => throw _privateConstructorUsedError;
+  String? get filterBy => throw _privateConstructorUsedError;
+  String? get filterText => throw _privateConstructorUsedError;
   DataSource<DataModel>? get tableDataSource =>
       throw _privateConstructorUsedError;
 
@@ -63,6 +69,8 @@ abstract class $TableStateCopyWith<T extends DataModel, $Res> {
       bool sortAscending,
       bool updateData,
       bool loading,
+      String? filterBy,
+      String? filterText,
       DataSource<DataModel>? tableDataSource});
 }
 
@@ -82,6 +90,8 @@ class _$TableStateCopyWithImpl<T extends DataModel, $Res>
     Object? sortAscending = freezed,
     Object? updateData = freezed,
     Object? loading = freezed,
+    Object? filterBy = freezed,
+    Object? filterText = freezed,
     Object? tableDataSource = freezed,
   }) {
     return _then(_value.copyWith(
@@ -105,6 +115,14 @@ class _$TableStateCopyWithImpl<T extends DataModel, $Res>
           ? _value.loading
           : loading // ignore: cast_nullable_to_non_nullable
               as bool,
+      filterBy: filterBy == freezed
+          ? _value.filterBy
+          : filterBy // ignore: cast_nullable_to_non_nullable
+              as String?,
+      filterText: filterText == freezed
+          ? _value.filterText
+          : filterText // ignore: cast_nullable_to_non_nullable
+              as String?,
       tableDataSource: tableDataSource == freezed
           ? _value.tableDataSource
           : tableDataSource // ignore: cast_nullable_to_non_nullable
@@ -126,6 +144,8 @@ abstract class _$TableStateCopyWith<T extends DataModel, $Res>
       bool sortAscending,
       bool updateData,
       bool loading,
+      String? filterBy,
+      String? filterText,
       DataSource<DataModel>? tableDataSource});
 }
 
@@ -147,6 +167,8 @@ class __$TableStateCopyWithImpl<T extends DataModel, $Res>
     Object? sortAscending = freezed,
     Object? updateData = freezed,
     Object? loading = freezed,
+    Object? filterBy = freezed,
+    Object? filterText = freezed,
     Object? tableDataSource = freezed,
   }) {
     return _then(_TableState<T>(
@@ -170,6 +192,14 @@ class __$TableStateCopyWithImpl<T extends DataModel, $Res>
           ? _value.loading
           : loading // ignore: cast_nullable_to_non_nullable
               as bool,
+      filterBy: filterBy == freezed
+          ? _value.filterBy
+          : filterBy // ignore: cast_nullable_to_non_nullable
+              as String?,
+      filterText: filterText == freezed
+          ? _value.filterText
+          : filterText // ignore: cast_nullable_to_non_nullable
+              as String?,
       tableDataSource: tableDataSource == freezed
           ? _value.tableDataSource
           : tableDataSource // ignore: cast_nullable_to_non_nullable
@@ -189,6 +219,8 @@ class _$_TableState<T extends DataModel>
       required this.sortAscending,
       required this.updateData,
       required this.loading,
+      this.filterBy,
+      this.filterText,
       this.tableDataSource});
 
   @override
@@ -202,11 +234,15 @@ class _$_TableState<T extends DataModel>
   @override
   final bool loading;
   @override
+  final String? filterBy;
+  @override
+  final String? filterText;
+  @override
   final DataSource<DataModel>? tableDataSource;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'TableState<$T>(rowsPerPage: $rowsPerPage, sortColumnIndex: $sortColumnIndex, sortAscending: $sortAscending, updateData: $updateData, loading: $loading, tableDataSource: $tableDataSource)';
+    return 'TableState<$T>(rowsPerPage: $rowsPerPage, sortColumnIndex: $sortColumnIndex, sortAscending: $sortAscending, updateData: $updateData, loading: $loading, filterBy: $filterBy, filterText: $filterText, tableDataSource: $tableDataSource)';
   }
 
   @override
@@ -219,6 +255,8 @@ class _$_TableState<T extends DataModel>
       ..add(DiagnosticsProperty('sortAscending', sortAscending))
       ..add(DiagnosticsProperty('updateData', updateData))
       ..add(DiagnosticsProperty('loading', loading))
+      ..add(DiagnosticsProperty('filterBy', filterBy))
+      ..add(DiagnosticsProperty('filterText', filterText))
       ..add(DiagnosticsProperty('tableDataSource', tableDataSource));
   }
 
@@ -241,6 +279,12 @@ class _$_TableState<T extends DataModel>
             (identical(other.loading, loading) ||
                 const DeepCollectionEquality()
                     .equals(other.loading, loading)) &&
+            (identical(other.filterBy, filterBy) ||
+                const DeepCollectionEquality()
+                    .equals(other.filterBy, filterBy)) &&
+            (identical(other.filterText, filterText) ||
+                const DeepCollectionEquality()
+                    .equals(other.filterText, filterText)) &&
             (identical(other.tableDataSource, tableDataSource) ||
                 const DeepCollectionEquality()
                     .equals(other.tableDataSource, tableDataSource)));
@@ -254,6 +298,8 @@ class _$_TableState<T extends DataModel>
       const DeepCollectionEquality().hash(sortAscending) ^
       const DeepCollectionEquality().hash(updateData) ^
       const DeepCollectionEquality().hash(loading) ^
+      const DeepCollectionEquality().hash(filterBy) ^
+      const DeepCollectionEquality().hash(filterText) ^
       const DeepCollectionEquality().hash(tableDataSource);
 
   @JsonKey(ignore: true)
@@ -269,6 +315,8 @@ abstract class _TableState<T extends DataModel> implements TableState<T> {
       required bool sortAscending,
       required bool updateData,
       required bool loading,
+      String? filterBy,
+      String? filterText,
       DataSource<DataModel>? tableDataSource}) = _$_TableState<T>;
 
   @override
@@ -281,6 +329,10 @@ abstract class _TableState<T extends DataModel> implements TableState<T> {
   bool get updateData => throw _privateConstructorUsedError;
   @override
   bool get loading => throw _privateConstructorUsedError;
+  @override
+  String? get filterBy => throw _privateConstructorUsedError;
+  @override
+  String? get filterText => throw _privateConstructorUsedError;
   @override
   DataSource<DataModel>? get tableDataSource =>
       throw _privateConstructorUsedError;

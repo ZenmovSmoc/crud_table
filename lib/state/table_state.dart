@@ -6,13 +6,15 @@ import 'package:flutter/foundation.dart';
 part 'table_state.freezed.dart';
 
 @freezed
-abstract class TableState<T extends DataModel> with _$TableState<T> {
+class TableState<T extends DataModel> with _$TableState<T> {
   const factory TableState({
     required int rowsPerPage,
     required int sortColumnIndex,
     required bool sortAscending,
     required bool updateData,
     required bool loading,
+    String? filterBy,
+    String? filterText,
     DataSource? tableDataSource,
   }) = _TableState;
 }
