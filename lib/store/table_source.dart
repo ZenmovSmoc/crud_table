@@ -9,26 +9,27 @@ class DataSource<T extends DataModel> extends DataTableSource {
 
   DateTime lastUpdateTime = DateTime.now();
   late bool _isEditable;
-  late Function(DataModel) _editHandler;
-  late Function(DataModel) _deleteHandler;
 
-  set editHandler(Function(DataModel) handler) {
-    this._editHandler = handler;
+  late Function(T) _editHandler;
+  late Function(T) _deleteHandler;
+
+  set editHandler(Function(T) handler) {
+    _editHandler = handler;
   }
 
-  set deleteHandler(Function(DataModel) handler) {
-    this._deleteHandler = handler;
+  set deleteHandler(Function(T) handler) {
+    _deleteHandler = handler;
   }
 
   set isEditable(bool editable) {
-    this._isEditable = editable;
+    _isEditable = editable;
   }
 
   @override
   DataRow? getRow(int index) {
     assert(index >= 0);
 
-    final DataModel item = data[index];
+    final T item = data[index];
 
     return DataRow.byIndex(
       index: index,
@@ -45,8 +46,8 @@ class DataSource<T extends DataModel> extends DataTableSource {
   @override
   int get selectedRowCount => 0;
 
-  List<DataCell> createDataCell(DataModel item) {
-    List<DataCell> cells = [];
+  List<DataCell> createDataCell(T item) {
+    final List<DataCell> cells = [];
     final params = item.getDisplayParamsList();
     final map = item.toMap();
 
@@ -182,7 +183,7 @@ class DataSource<T extends DataModel> extends DataTableSource {
     final formatter = DateFormat('yyyy-MM-dd HH:mm');
     return data != null
         ? DataCell(
-            Text('${formatter.format(data)}'),
+            Text(formatter.format(data)),
           )
         : const DataCell(Text(''));
   }
@@ -239,6 +240,7 @@ class DataSource<T extends DataModel> extends DataTableSource {
   DataCell _imageCell(String data) {
     return DataCell(
       Container(
+        //TODO
         height: 90,
         width: 90,
         // child: Image(

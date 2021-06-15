@@ -52,13 +52,19 @@ class TableStateNotifier<T extends DataModel>
     init();
   }
 
+  Future<void> update(T data) async {
+    value = value.copyWith(loading: true);
+    await repository.update(data);
+    init();
+  }
+
   void rowsPerPage(int? rowsPerPage) => value = value.copyWith(
       rowsPerPage: rowsPerPage ?? PaginatedDataTable.defaultRowsPerPage);
 
   void sortColumnIndex(int sortColumnIndex) =>
       value = value.copyWith(sortColumnIndex: sortColumnIndex);
 
-  void sortAscending(bool sortAscending) =>
+  void sortAscending({required bool sortAscending}) =>
       value = value.copyWith(sortAscending: sortAscending);
 
   void setFilterKey(String filterKey) {
@@ -85,7 +91,11 @@ class TableStateNotifier<T extends DataModel>
     }
   }
 
-  void sort<T>(String key, int columnIndex, bool ascending) {
+  void sort({
+    required String key,
+    required int columnIndex,
+    required bool ascending,
+  }) {
     _data.sort(
       (a, b) {
         final aMap = a.toMap();
@@ -105,7 +115,7 @@ class TableStateNotifier<T extends DataModel>
     );
 
     sortColumnIndex(columnIndex);
-    sortAscending(ascending);
+    sortAscending(sortAscending: ascending);
   }
 
   @override

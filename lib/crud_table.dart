@@ -4,6 +4,7 @@ import 'package:crud_table/model/data_model.dart';
 import 'package:crud_table/model/data_repository.dart';
 import 'package:crud_table/state/table_state.dart';
 import 'package:crud_table/store/table_notifier.dart';
+import 'package:crud_table/widgets/edit_view.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:data_table_2/paginated_data_table_2.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class CRUDTable<T extends DataModel> extends StatefulWidget {
   _CRUDTableState createState() => _CRUDTableState();
 }
 
-class _CRUDTableState extends State<CRUDTable> {
+class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
   late final TableStateNotifier _notifier;
 
   @override
@@ -52,8 +53,18 @@ class _CRUDTableState extends State<CRUDTable> {
       builder: (context, state, child) {
         if (state.tableDataSource != null) {
           state.tableDataSource!.isEditable = widget.isEditable;
-          state.tableDataSource!.editHandler = (model) {
-            print(model);
+          state.tableDataSource!.editHandler = (model) async {
+            final T? result = await showDialog(
+              context: context,
+              builder: (context) => EditView(
+                type: EditType.update,
+                data: model,
+              ),
+            );
+
+            if (result != null) {
+              // _notifier.update(result);
+            }
           };
           state.tableDataSource!.deleteHandler = (model) async {
             final result = await showConfirmationDialog(context);
@@ -86,7 +97,7 @@ class _CRUDTableState extends State<CRUDTable> {
               Container(
                 height: MediaQuery.of(context).size.height,
                 color: Colors.black45,
-                child: Center(
+                child: const Center(
                   child: CircularProgressIndicator(),
                 ),
               )
@@ -129,16 +140,25 @@ class _CRUDTableState extends State<CRUDTable> {
       ),
       IconButton(
         icon: const Icon(Icons.add),
-        onPressed: () {
-          final model = widget.instance.call();
-          _notifier.create(model);
+        onPressed: () async {
+          final T? result = await showDialog(
+            context: context,
+            builder: (context) => EditView(
+              type: EditType.add,
+              data: widget.instance.call(),
+            ),
+          );
+
+          if (result != null) {
+            // _notifier.create(model);
+          }
         },
       )
     ];
   }
 
   List<DataColumn> buildDataColumns() {
-    List<DataColumn> columns = [];
+    final List<DataColumn> columns = [];
     final params = widget.instance.call().getDisplayParamsList();
 
     params.forEach(
@@ -147,17 +167,17 @@ class _CRUDTableState extends State<CRUDTable> {
         if (type == Image) {
           columns.add(
             DataColumn2(
-              label: Text("${element.toString()}"),
+              label: Text(element.toString()),
             ),
           );
         } else {
           columns.add(
             DataColumn2(
-              label: Text("${element.toString()}"),
-              onSort: (columnIndex, ascending) => _notifier.sort<dynamic>(
-                element,
-                columnIndex,
-                ascending,
+              label: Text(element.toString()),
+              onSort: (columnIndex, ascending) => _notifier.sort(
+                key: element,
+                columnIndex: columnIndex,
+                ascending: ascending,
               ),
             ),
           );

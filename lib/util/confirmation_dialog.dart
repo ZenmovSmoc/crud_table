@@ -6,20 +6,20 @@ Future<bool?> showConfirmationDialog(BuildContext context) async {
     barrierDismissible: false, // user must tap button!
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Confirmation'),
-        content: Text('Are you sure want to delete this item?'),
+        title: const Text('Confirmation'),
+        content: const Text('Are you sure want to delete this item?'),
         actions: <Widget>[
           TextButton(
-            child: Text('Confirm'),
             onPressed: () {
               Navigator.of(context).pop(true);
             },
+            child: const Text('Confirm'),
           ),
           TextButton(
-            child: Text('Cancel'),
             onPressed: () {
               Navigator.of(context).pop(false);
             },
+            child: const Text('Cancel'),
           ),
         ],
       );

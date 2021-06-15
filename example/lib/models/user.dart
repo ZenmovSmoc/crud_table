@@ -29,6 +29,10 @@ class UserModel with _$UserModel, DataModel {
     return {
       'name': String,
       'email': String,
+      'nationality': String,
+      'tel': String,
+      'address': String,
+      'createdAt': DateTime,
     };
   }
 
@@ -47,7 +51,14 @@ class UserModel with _$UserModel, DataModel {
 
   @override
   Map<String, Type> getEditableParamsList() {
-    return {};
+    return {
+      'name': String,
+      'email': String,
+      'nationality': String,
+      'tel': String,
+      'address': String,
+      'createdAt': DateTime,
+    };
   }
 
   @override
