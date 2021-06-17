@@ -167,23 +167,24 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
         icon: const Icon(Icons.refresh),
         onPressed: _notifier.init,
       ),
-      IconButton(
-        icon: const Icon(Icons.add),
-        onPressed: () async {
-          final T? result = await showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) => EditView(
-              type: EditType.add,
-              data: widget.instance.call(),
-            ),
-          );
+      if (widget.isEditable)
+        IconButton(
+          icon: const Icon(Icons.add),
+          onPressed: () async {
+            final T? result = await showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => EditView(
+                type: EditType.add,
+                data: widget.instance.call(),
+              ),
+            );
 
-          if (result != null) {
-            _notifier.create(result);
-          }
-        },
-      )
+            if (result != null) {
+              _notifier.create(result);
+            }
+          },
+        )
     ];
   }
 
