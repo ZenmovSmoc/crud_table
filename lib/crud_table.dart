@@ -26,7 +26,7 @@ class CRUDTable<T extends DataModel> extends StatefulWidget {
     this.isEditable = true,
     required this.repository,
     required this.instance,
-    this.padding = const EdgeInsets.all(16),
+    this.padding = const EdgeInsets.all(12),
   }) : super(key: key);
 
   @override
@@ -56,6 +56,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
           state.tableDataSource!.editHandler = (model) async {
             final T? result = await showDialog(
               context: context,
+              barrierDismissible: false,
               builder: (context) => EditView(
                 type: EditType.update,
                 data: model,
@@ -63,7 +64,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
             );
 
             if (result != null) {
-              // _notifier.update(result);
+              _notifier.update(result);
             }
           };
           state.tableDataSource!.deleteHandler = (model) async {
@@ -87,12 +88,40 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
                 sortColumnIndex: state.sortColumnIndex,
                 sortAscending: state.sortAscending,
                 source: state.tableDataSource!,
-                fit: FlexFit.tight,
                 horizontalMargin: 20,
                 checkboxHorizontalMargin: 12,
                 columnSpacing: 0,
               ),
             ),
+            if (state.updateData)
+              SizedBox(
+                height: 50,
+                child: Center(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.deepOrangeAccent,
+                      minimumSize: const Size(88, 36),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 14),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(2)),
+                      ),
+                    ),
+                    onPressed: () => _notifier.init(),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Text(
+                          'New data available',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        SizedBox(width: 4),
+                        Icon(Icons.refresh, color: Colors.white)
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             if (state.loading)
               Container(
                 height: MediaQuery.of(context).size.height,
@@ -143,6 +172,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
         onPressed: () async {
           final T? result = await showDialog(
             context: context,
+            barrierDismissible: false,
             builder: (context) => EditView(
               type: EditType.add,
               data: widget.instance.call(),
@@ -150,7 +180,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
           );
 
           if (result != null) {
-            // _notifier.create(model);
+            _notifier.create(result);
           }
         },
       )
@@ -190,6 +220,8 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
         const DataColumn2(label: Text('Actions'), size: ColumnSize.S),
       );
     }
+
+    columns.insert(0, const DataColumn2(label: Text(''), size: ColumnSize.S));
 
     return columns;
   }

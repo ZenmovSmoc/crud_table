@@ -32,7 +32,6 @@ class UserModel with _$UserModel, DataModel {
       'nationality': String,
       'tel': String,
       'address': String,
-      'createdAt': DateTime,
     };
   }
 
@@ -57,12 +56,8 @@ class UserModel with _$UserModel, DataModel {
       'nationality': String,
       'tel': String,
       'address': String,
-      'createdAt': DateTime,
     };
   }
-
-  @override
-  void setParameter(String key, value) {}
 
   @override
   Map<String, dynamic> toMap() {
@@ -76,5 +71,23 @@ class UserModel with _$UserModel, DataModel {
       'createdAt': this.createdAt,
       'updatedAt': this.updatedAt,
     };
+  }
+
+  @override
+  DataModel setParameter(String key, value) {
+    switch (key) {
+      case 'name':
+        return this.copyWith(name: value);
+      case 'email':
+        return this.copyWith(email: value);
+      case 'nationality':
+        return this.copyWith(nationality: value);
+      case 'tel':
+        return this.copyWith(tel: value);
+      case 'address':
+        return this.copyWith(address: value);
+      default:
+        return this.copyWith();
+    }
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:crud_table/model/data_model.dart';
 import 'package:crud_table/model/data_repository.dart';
 import 'package:crud_table/state/table_state.dart';
@@ -16,17 +18,28 @@ class TableStateNotifier<T extends DataModel>
           rowsPerPage: PaginatedDataTable.defaultRowsPerPage,
           sortAscending: true,
           updateData: false,
-          sortColumnIndex: 1,
-          loading: true,
+          sortColumnIndex: 0,
+          loading: false,
           filterBy: displayParameters.entries.first.key,
           tableDataSource: DataSource<T>([]),
         )) {
     init();
+    _initStream();
   }
 
   late List<T> _data;
 
-  late DateTime _lastUpdateTime;
+  DateTime? _lastUpdateTime;
+
+  late StreamSubscription<List<T>> _streamSubscription;
+
+  void _initStream() {
+    _streamSubscription = repository.stream().listen(
+      (data) {
+        value = value.copyWith(updateData: true);
+      },
+    );
+  }
 
   Future<void> init() async {
     value = value.copyWith(loading: true);
@@ -34,10 +47,13 @@ class TableStateNotifier<T extends DataModel>
     _data = await repository.fetch();
 
     value = value.copyWith(
-      tableDataSource: DataSource<T>(_data),
+      tableDataSource: DataSource<T>(_data, lastUpdateTime: _lastUpdateTime),
       loading: false,
+      updateData: false,
     );
+
     filter(value.filterText);
+    _lastUpdateTime = DateTime.now();
   }
 
   Future<void> delete(T data) async {
@@ -75,19 +91,24 @@ class TableStateNotifier<T extends DataModel>
   void filter(String? filter) {
     if (filter != null && filter.isNotEmpty) {
       value = value.copyWith(
-        tableDataSource: DataSource(_data.where((e) {
-          final param = e.toMap();
+        tableDataSource: DataSource(
+          _data.where((e) {
+            final param = e.toMap();
 
-          return param[value.filterBy]
-              .toString()
-              .toLowerCase()
-              .contains(filter.toLowerCase());
-        }).toList()),
+            return param[value.filterBy]
+                .toString()
+                .toLowerCase()
+                .contains(filter.toLowerCase());
+          }).toList(),
+          lastUpdateTime: _lastUpdateTime,
+        ),
         filterText: filter,
       );
     } else {
-      value =
-          value.copyWith(tableDataSource: DataSource(_data), filterText: null);
+      value = value.copyWith(
+        tableDataSource: DataSource(_data, lastUpdateTime: _lastUpdateTime),
+        filterText: null,
+      );
     }
   }
 
@@ -101,8 +122,8 @@ class TableStateNotifier<T extends DataModel>
         final aMap = a.toMap();
         final bMap = b.toMap();
 
-        final Comparable<T> aValue = aMap[key];
-        final Comparable<T> bValue = bMap[key];
+        final Comparable aValue = aMap[key];
+        final Comparable bValue = bMap[key];
 
         return ascending
             ? Comparable.compare(aValue, bValue)
@@ -111,8 +132,10 @@ class TableStateNotifier<T extends DataModel>
     );
 
     value = value.copyWith(
-      tableDataSource: DataSource(_data),
+      tableDataSource: DataSource(_data, lastUpdateTime: _lastUpdateTime),
     );
+
+    filter(value.filterText);
 
     sortColumnIndex(columnIndex);
     sortAscending(sortAscending: ascending);
@@ -120,6 +143,7 @@ class TableStateNotifier<T extends DataModel>
 
   @override
   void dispose() {
+    _streamSubscription.cancel();
     super.dispose();
   }
 }

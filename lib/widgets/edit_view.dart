@@ -22,7 +22,6 @@ class _EditViewState extends State<EditView> {
   final _formKey = GlobalKey<FormState>();
 
   final Map<String, TextEditingController> _formControllers = {};
-  final Map<String, TextEditingValue> _formEditingValues = {};
 
   late Map<String, Type> _parameters;
 
@@ -45,7 +44,6 @@ class _EditViewState extends State<EditView> {
         final _controller = TextEditingController(
             text: initTextEditingValue(type, dataMap[key]));
         _formControllers[key] = _controller;
-        // _formEditingValues[key] = useValueListenable(_formControllers[key]);
 
         widgets.add(
           Padding(
@@ -82,15 +80,24 @@ class _EditViewState extends State<EditView> {
             shrinkWrap: true,
             padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
             children: [
-              Center(
-                child: Text(
-                  widget.type == EditType.add ? 'New Data' : 'Update Data',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0,
-                    letterSpacing: 2,
+              ListTile(
+                title: Center(
+                  child: Text(
+                    widget.type == EditType.add ? 'New Data' : 'Update Data',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0,
+                      letterSpacing: 2,
+                    ),
+                    // textAlign: TextAlign.center,
                   ),
                 ),
+                trailing: IconButton(
+                  onPressed: () => Navigator.of(context).pop(null),
+                  icon: const Icon(Icons.close),
+                  padding: const EdgeInsets.all(0),
+                ),
+                dense: true,
               ),
               const SizedBox(height: 32),
               ...widgets,
@@ -99,9 +106,13 @@ class _EditViewState extends State<EditView> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      _formControllers.entries.forEach((element) {
-                        print('${element.key} - ${element.value.text}');
+                      DataModel _data = widget.data;
+
+                      _formControllers.forEach((key, value) {
+                        _data = _data.setParameter(key, value.text);
                       });
+
+                      Navigator.of(context).pop(_data);
                     }
                   },
                   style: ElevatedButton.styleFrom(

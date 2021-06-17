@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class DataSource<T extends DataModel> extends DataTableSource {
-  DataSource(this.data);
+  DataSource(this.data, {this.lastUpdateTime});
 
   final List<T> data;
 
-  DateTime lastUpdateTime = DateTime.now();
+  final DateTime? lastUpdateTime;
   late bool _isEditable;
 
   late Function(T) _editHandler;
@@ -79,7 +79,6 @@ class DataSource<T extends DataModel> extends DataTableSource {
       },
     );
 
-    // add edit and delete button
     if (_isEditable) {
       cells.add(
         DataCell(
@@ -106,64 +105,19 @@ class DataSource<T extends DataModel> extends DataTableSource {
     }
 
     // ToDo: 更新時に
-    // if (lastUpdateTime == null) {
-    //   cells.insert(
-    //     0,
-    //     DataCell(
-    //       Text(''),
-    //     ),
-    //   );
-    //   // } else if (map['createdAt'] != null &&
-    //   //     lastUpdateTime.isBefore(map['createdAt'])) {
-    //   //   cells.insert(
-    //   //     0,
-    //   //     DataCell(
-    //   //       Container(
-    //   //         child: Padding(
-    //   //           padding:
-    //   //               const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-    //   //           child: Text(
-    //   //             'New Data',
-    //   //             style: TextStyle(color: Colors.white),
-    //   //           ),
-    //   //         ),
-    //   //         decoration: BoxDecoration(
-    //   //           color: Colors.deepOrange,
-    //   //           borderRadius: BorderRadius.circular(8),
-    //   //         ),
-    //   //       ),
-    //   //     ),
-    //   //   );
-    //   // } else if (map['updatedAt'] != null &&
-    //   //     lastUpdateTime.isBefore(map['updatedAt'])) {
-    //   //   cells.insert(
-    //   //     0,
-    //   //     DataCell(
-    //   //       Container(
-    //   //         child: Padding(
-    //   //           padding:
-    //   //               const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-    //   //           child: Text(
-    //   //             'Latest Update',
-    //   //             style: TextStyle(color: Colors.white),
-    //   //           ),
-    //   //         ),
-    //   //         decoration: BoxDecoration(
-    //   //           color: Colors.deepOrange,
-    //   //           borderRadius: BorderRadius.circular(8),
-    //   //         ),
-    //   //       ),
-    //   //     ),
-    //   //   );
-    //   // }
-    // } else {
-    //   cells.insert(
-    //     0,
-    //     DataCell(
-    //       Text(''),
-    //     ),
-    //   );
-    // }
+    if (lastUpdateTime == null) {
+      cells.insert(0, const DataCell(Text('')));
+    } else {
+      if (map['createdAt'] != null &&
+          lastUpdateTime!.isBefore(map['createdAt'])) {
+        cells.insert(0, const DataCell(_TableNoticeWidget('New Data')));
+      } else if (map['updatedAt'] != null &&
+          lastUpdateTime!.isBefore(map['updatedAt'])) {
+        cells.insert(0, const DataCell(_TableNoticeWidget('Latest Update')));
+      } else {
+        cells.insert(0, const DataCell(Text('')));
+      }
+    }
 
     return cells;
   }
@@ -257,6 +211,32 @@ class DataSource<T extends DataModel> extends DataTableSource {
   DataCell _defaultDataCell(dynamic data) {
     return DataCell(
       Text('${data ?? ''}'),
+    );
+  }
+}
+
+class _TableNoticeWidget extends StatelessWidget {
+  final String text;
+  const _TableNoticeWidget(this.text, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.deepOrange,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        child: Text(
+          text,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
     );
   }
 }

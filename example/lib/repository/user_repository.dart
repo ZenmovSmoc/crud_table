@@ -12,14 +12,17 @@ class UserRepository extends DataRepository<UserModel> {
             address: 'address $index',
             nationality: 'nat $index',
             fcmToken: 'tok $index',
-            createdAt: DateTime.now().add(Duration(days: index)),
-            updatedAt: DateTime.now().add(Duration(days: index)),
+            createdAt: DateTime.now().subtract(Duration(days: index)),
+            updatedAt: DateTime.now().subtract(Duration(days: index)),
           ));
 
   @override
   Future<void> create(UserModel model) async {
     await Future.delayed(const Duration(seconds: 1));
-    users.add(model);
+    users.add(model.copyWith(
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    ));
   }
 
   @override
@@ -36,13 +39,15 @@ class UserRepository extends DataRepository<UserModel> {
 
   @override
   Stream<List<UserModel>> stream() {
-    // TODO: implement stream
-    throw UnimplementedError();
+    return Stream.fromIterable([
+      [UserModel()]
+    ]);
   }
 
   @override
   Future<void> update(UserModel model) async {
     await Future.delayed(const Duration(seconds: 1));
-    users[users.indexWhere((element) => element.docId == model.docId)] = model;
+    users[users.indexWhere((element) => element.docId == model.docId)] =
+        model.copyWith(updatedAt: DateTime.now());
   }
 }
