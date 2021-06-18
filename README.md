@@ -1,14 +1,29 @@
 # crud_table
 
-A new Flutter package project.
+Create fast data tables with CRUD functionality.
 
-## Getting Started
+<p align="center">
+  <img src="./screenshot.png" height="550">
+</p>
 
-This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
+## Installing:
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+```yaml
+dependencies:
+   crud_table:
+    git:
+      url: git://github.com/ZenmovSmoc/crud_table.git
+```
+```dart
+import 'package:crud_table/crud_table.dart';
+```
+
+## Basic Usage:
+```dart
+CRUDTable<UserModel>(
+    headerTitle: 'User',
+    isEditable: true,
+    repository: UserRepository(),
+    instance: () => const UserModel(),
+)
+```

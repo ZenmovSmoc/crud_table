@@ -1,6 +1,6 @@
 name: crud_table
 description: A package for creating CRUD Admin tables.
-version: 0.0.1
+version: 0.1.0
 homepage:
 
 environment:
