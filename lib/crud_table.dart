@@ -17,6 +17,7 @@ typedef CustomHandler<S> = DataCell Function(S);
 class CRUDTable<T extends DataModel> extends StatefulWidget {
   final String headerTitle;
   final bool isEditable;
+  final bool canAddEntry;
   final DataRepository repository;
   final ItemCreator<T> instance;
   final Map<Type, CustomHandler>? customDisplayHandlers;
@@ -26,6 +27,7 @@ class CRUDTable<T extends DataModel> extends StatefulWidget {
     Key? key,
     required this.headerTitle,
     this.isEditable = true,
+    this.canAddEntry = true,
     required this.repository,
     required this.instance,
     this.padding = const EdgeInsets.all(12),
@@ -171,7 +173,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
         icon: const Icon(Icons.refresh),
         onPressed: _notifier.init,
       ),
-      if (widget.isEditable)
+      if (widget.canAddEntry)
         IconButton(
           icon: const Icon(Icons.add),
           onPressed: () async {

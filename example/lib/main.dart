@@ -23,9 +23,10 @@ class _MyAppState extends State<MyApp> {
         body: Center(
           child: CRUDTable<UserModel>(
             headerTitle: 'User',
-            isEditable: true,
             repository: UserRepository(),
             instance: () => const UserModel(),
+            isEditable: true,
+            canAddEntry: true,
             customDisplayHandlers: {
               CustomType: (val) {
                 final type = val as CustomType;
