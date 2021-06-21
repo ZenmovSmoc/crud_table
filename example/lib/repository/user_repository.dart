@@ -3,18 +3,20 @@ import 'package:crud_table_example/models/user.dart';
 
 class UserRepository extends DataRepository<UserModel> {
   List<UserModel> users = List.generate(
-      5,
-      (index) => UserModel(
-            docId: 'id $index',
-            name: 'name $index',
-            tel: 'tel $index',
-            email: 'email_$index@gmail.com',
-            address: 'address $index',
-            nationality: 'nat $index',
-            fcmToken: 'tok $index',
-            createdAt: DateTime.now().subtract(Duration(days: index)),
-            updatedAt: DateTime.now().subtract(Duration(days: index)),
-          ));
+    5,
+    (index) => UserModel(
+      docId: 'id $index',
+      name: 'name $index',
+      tel: 'tel $index',
+      email: 'email_$index@gmail.com',
+      address: 'address $index',
+      nationality: 'nat $index',
+      fcmToken: 'tok $index',
+      createdAt: DateTime.now().subtract(Duration(days: index)),
+      updatedAt: DateTime.now().subtract(Duration(days: index)),
+      customType: CustomType('$index'),
+    ),
+  );
 
   @override
   Future<void> create(UserModel model) async {

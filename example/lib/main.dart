@@ -26,6 +26,21 @@ class _MyAppState extends State<MyApp> {
             isEditable: true,
             repository: UserRepository(),
             instance: () => const UserModel(),
+            customDisplayHandlers: {
+              CustomType: (val) {
+                final type = val as CustomType;
+                return DataCell(
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        print('tapped ${type.text}');
+                      },
+                      child: Text(type.text),
+                    ),
+                  ),
+                );
+              }
+            },
           ),
         ),
       ),

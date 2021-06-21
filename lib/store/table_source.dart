@@ -2,6 +2,8 @@ import 'package:crud_table/model/data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../crud_table.dart';
+
 class DataSource<T extends DataModel> extends DataTableSource {
   DataSource(this.data, {this.lastUpdateTime});
 
@@ -13,6 +15,8 @@ class DataSource<T extends DataModel> extends DataTableSource {
   late Function(T) _editHandler;
   late Function(T) _deleteHandler;
 
+  late Map<Type, CustomHandler>? _customHandlers;
+
   set editHandler(Function(T) handler) {
     _editHandler = handler;
   }
@@ -23,6 +27,10 @@ class DataSource<T extends DataModel> extends DataTableSource {
 
   set isEditable(bool editable) {
     _isEditable = editable;
+  }
+
+  set customHandlers(Map<Type, CustomHandler>? customHandlers) {
+    _customHandlers = customHandlers;
   }
 
   @override
@@ -53,24 +61,26 @@ class DataSource<T extends DataModel> extends DataTableSource {
 
     params.forEach(
       (element, type) {
-        // if (type == GeoPoint) {
-        //   cells.add(
-        //     _geoPointDataCell(map[element]),
-        //   );
-        // } else
         if (type == DateTime) {
           cells.add(
             _dateTimeCell(map[element]),
           );
-          // } else if (type == ReservationsStatus) {
-          //   cells.add(
-          //     _reservationStatusCell(item, element),
-          //   );
-          // }
         } else if (type == Image) {
           cells.add(
             _imageCell(map[element]),
           );
+        } else if (_customHandlers != null &&
+            _customHandlers!.containsKey(type)) {
+          final handler = _customHandlers![type];
+
+          if (map[element] == null) {
+            cells.add(
+              _defaultDataCell(map[element]),
+            );
+          } else {
+            final e = handler!.call(map[element]);
+            cells.add(e);
+          }
         } else {
           cells.add(
             _defaultDataCell(map[element]),
@@ -122,17 +132,6 @@ class DataSource<T extends DataModel> extends DataTableSource {
     return cells;
   }
 
-  // DataCell _geoPointDataCell(GeoPoint data) {
-  //   return DataCell(
-  //     IconButton(
-  //       icon: const Icon(Icons.location_on),
-  //       onPressed: () {
-  //         mapButtonHandler(data);
-  //       },
-  //     ),
-  //   );
-  // }
-
   DataCell _dateTimeCell(DateTime? data) {
     final formatter = DateFormat('yyyy-MM-dd HH:mm');
     return data != null
@@ -142,68 +141,16 @@ class DataSource<T extends DataModel> extends DataTableSource {
         : const DataCell(Text(''));
   }
 
-  // DataCell _reservationStatusCell(DataModel item, String key) {
-  //   final data = item.toMap();
-
-  //   if (data[key] == 4 && data['planLaundryOutAt'] == null) {
-  //     return DataCell(
-  //       Center(
-  //         child: Column(
-  //           mainAxisSize: MainAxisSize.min,
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           children: [
-  //             Text(getReservationStatusString(data[key]) ?? ''),
-  //             RaisedButton(
-  //               child: const Text('Laundry done'),
-  //               onPressed: () {
-  //                 statusChangedHandler(
-  //                   item,
-  //                   DateTime.now(),
-  //                 );
-  //               },
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     );
-  //   } else if (data[key] == 4 && data['planLaundryOutAt'] != null) {
-  //     return DataCell(
-  //       Center(
-  //         child: Column(
-  //           mainAxisSize: MainAxisSize.min,
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           children: [
-  //             Text(getReservationStatusString(data[key]) ?? ''),
-  //             RaisedButton(
-  //               child: const Text('Re open'),
-  //               onPressed: () {
-  //                 item.setParameter('planLaundryOutAt', null);
-  //                 statusChangedHandler(item, null);
-  //               },
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     );
-  //   }
-  //   return DataCell(
-  //     Text(getReservationStatusString(data[key]) ?? ''),
-  //   );
-  // }
-
   DataCell _imageCell(String data) {
     return DataCell(
-      Container(
-        //TODO
+      SizedBox(
         height: 90,
         width: 90,
-        // child: Image(
-        //   fit: BoxFit.contain,
-        //   imageUrl: data ?? "",
-        //   errorWidget: (context, url, error) {
-        //     return const Icon(Icons.broken_image);
-        //   },
-        // ),
+        child: Image(
+          image: NetworkImage(data),
+          fit: BoxFit.contain,
+          errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+        ),
       ),
     );
   }

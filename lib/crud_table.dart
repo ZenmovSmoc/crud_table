@@ -12,12 +12,14 @@ import 'package:flutter/material.dart';
 import 'util/confirmation_dialog.dart';
 
 typedef ItemCreator<S> = S Function();
+typedef CustomHandler<S> = DataCell Function(S);
 
 class CRUDTable<T extends DataModel> extends StatefulWidget {
   final String headerTitle;
   final bool isEditable;
   final DataRepository repository;
   final ItemCreator<T> instance;
+  final Map<Type, CustomHandler>? customDisplayHandlers;
   final EdgeInsetsGeometry padding;
 
   const CRUDTable({
@@ -27,6 +29,7 @@ class CRUDTable<T extends DataModel> extends StatefulWidget {
     required this.repository,
     required this.instance,
     this.padding = const EdgeInsets.all(12),
+    this.customDisplayHandlers,
   }) : super(key: key);
 
   @override
@@ -53,6 +56,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
       builder: (context, state, child) {
         if (state.tableDataSource != null) {
           state.tableDataSource!.isEditable = widget.isEditable;
+          state.tableDataSource!.customHandlers = widget.customDisplayHandlers;
           state.tableDataSource!.editHandler = (model) async {
             final T? result = await showDialog(
               context: context,
@@ -194,25 +198,16 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
 
     params.forEach(
       (element, type) {
-        // if (type == GeoPoint || type == Image) {
-        if (type == Image) {
-          columns.add(
-            DataColumn2(
-              label: Text(element.toString()),
+        columns.add(
+          DataColumn2(
+            label: Text(element.toString()),
+            onSort: (columnIndex, ascending) => _notifier.sort(
+              key: element,
+              columnIndex: columnIndex,
+              ascending: ascending,
             ),
-          );
-        } else {
-          columns.add(
-            DataColumn2(
-              label: Text(element.toString()),
-              onSort: (columnIndex, ascending) => _notifier.sort(
-                key: element,
-                columnIndex: columnIndex,
-                ascending: ascending,
-              ),
-            ),
-          );
-        }
+          ),
+        );
       },
     );
 

@@ -5,6 +5,12 @@ import 'package:flutter/foundation.dart';
 part 'user.freezed.dart';
 part 'user.g.dart';
 
+class CustomType {
+  final String text;
+
+  CustomType(this.text);
+}
+
 @freezed
 class UserModel with _$UserModel, DataModel {
   const UserModel._();
@@ -19,6 +25,7 @@ class UserModel with _$UserModel, DataModel {
     String? fcmToken,
     DateTime? createdAt,
     DateTime? updatedAt,
+    CustomType? customType,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
@@ -45,6 +52,7 @@ class UserModel with _$UserModel, DataModel {
       'address': String,
       'createdAt': DateTime,
       'updatedAt': DateTime,
+      'customType': CustomType,
     };
   }
 
@@ -70,6 +78,7 @@ class UserModel with _$UserModel, DataModel {
       'fcmToken': this.fcmToken,
       'createdAt': this.createdAt,
       'updatedAt': this.updatedAt,
+      'customType': this.customType,
     };
   }
 

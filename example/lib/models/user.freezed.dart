@@ -29,7 +29,8 @@ class _$UserModelTearOff {
       String? nationality,
       String? fcmToken,
       DateTime? createdAt,
-      DateTime? updatedAt}) {
+      DateTime? updatedAt,
+      CustomType? customType}) {
     return _UserModel(
       docId: docId,
       name: name,
@@ -40,6 +41,7 @@ class _$UserModelTearOff {
       fcmToken: fcmToken,
       createdAt: createdAt,
       updatedAt: updatedAt,
+      customType: customType,
     );
   }
 
@@ -62,6 +64,7 @@ mixin _$UserModel {
   String? get fcmToken => throw _privateConstructorUsedError;
   DateTime? get createdAt => throw _privateConstructorUsedError;
   DateTime? get updatedAt => throw _privateConstructorUsedError;
+  CustomType? get customType => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -82,7 +85,8 @@ abstract class $UserModelCopyWith<$Res> {
       String? nationality,
       String? fcmToken,
       DateTime? createdAt,
-      DateTime? updatedAt});
+      DateTime? updatedAt,
+      CustomType? customType});
 }
 
 /// @nodoc
@@ -104,6 +108,7 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
     Object? fcmToken = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
+    Object? customType = freezed,
   }) {
     return _then(_value.copyWith(
       docId: docId == freezed
@@ -142,6 +147,10 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      customType: customType == freezed
+          ? _value.customType
+          : customType // ignore: cast_nullable_to_non_nullable
+              as CustomType?,
     ));
   }
 }
@@ -161,7 +170,8 @@ abstract class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Res> {
       String? nationality,
       String? fcmToken,
       DateTime? createdAt,
-      DateTime? updatedAt});
+      DateTime? updatedAt,
+      CustomType? customType});
 }
 
 /// @nodoc
@@ -184,6 +194,7 @@ class __$UserModelCopyWithImpl<$Res> extends _$UserModelCopyWithImpl<$Res>
     Object? fcmToken = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
+    Object? customType = freezed,
   }) {
     return _then(_UserModel(
       docId: docId == freezed
@@ -222,6 +233,10 @@ class __$UserModelCopyWithImpl<$Res> extends _$UserModelCopyWithImpl<$Res>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      customType: customType == freezed
+          ? _value.customType
+          : customType // ignore: cast_nullable_to_non_nullable
+              as CustomType?,
     ));
   }
 }
@@ -238,7 +253,8 @@ class _$_UserModel extends _UserModel with DiagnosticableTreeMixin {
       this.nationality,
       this.fcmToken,
       this.createdAt,
-      this.updatedAt})
+      this.updatedAt,
+      this.customType})
       : super._();
 
   factory _$_UserModel.fromJson(Map<String, dynamic> json) =>
@@ -262,10 +278,12 @@ class _$_UserModel extends _UserModel with DiagnosticableTreeMixin {
   final DateTime? createdAt;
   @override
   final DateTime? updatedAt;
+  @override
+  final CustomType? customType;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'UserModel(docId: $docId, name: $name, tel: $tel, email: $email, address: $address, nationality: $nationality, fcmToken: $fcmToken, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'UserModel(docId: $docId, name: $name, tel: $tel, email: $email, address: $address, nationality: $nationality, fcmToken: $fcmToken, createdAt: $createdAt, updatedAt: $updatedAt, customType: $customType)';
   }
 
   @override
@@ -281,7 +299,8 @@ class _$_UserModel extends _UserModel with DiagnosticableTreeMixin {
       ..add(DiagnosticsProperty('nationality', nationality))
       ..add(DiagnosticsProperty('fcmToken', fcmToken))
       ..add(DiagnosticsProperty('createdAt', createdAt))
-      ..add(DiagnosticsProperty('updatedAt', updatedAt));
+      ..add(DiagnosticsProperty('updatedAt', updatedAt))
+      ..add(DiagnosticsProperty('customType', customType));
   }
 
   @override
@@ -310,7 +329,10 @@ class _$_UserModel extends _UserModel with DiagnosticableTreeMixin {
                     .equals(other.createdAt, createdAt)) &&
             (identical(other.updatedAt, updatedAt) ||
                 const DeepCollectionEquality()
-                    .equals(other.updatedAt, updatedAt)));
+                    .equals(other.updatedAt, updatedAt)) &&
+            (identical(other.customType, customType) ||
+                const DeepCollectionEquality()
+                    .equals(other.customType, customType)));
   }
 
   @override
@@ -324,7 +346,8 @@ class _$_UserModel extends _UserModel with DiagnosticableTreeMixin {
       const DeepCollectionEquality().hash(nationality) ^
       const DeepCollectionEquality().hash(fcmToken) ^
       const DeepCollectionEquality().hash(createdAt) ^
-      const DeepCollectionEquality().hash(updatedAt);
+      const DeepCollectionEquality().hash(updatedAt) ^
+      const DeepCollectionEquality().hash(customType);
 
   @JsonKey(ignore: true)
   @override
@@ -347,7 +370,8 @@ abstract class _UserModel extends UserModel {
       String? nationality,
       String? fcmToken,
       DateTime? createdAt,
-      DateTime? updatedAt}) = _$_UserModel;
+      DateTime? updatedAt,
+      CustomType? customType}) = _$_UserModel;
   const _UserModel._() : super._();
 
   factory _UserModel.fromJson(Map<String, dynamic> json) =
@@ -371,6 +395,8 @@ abstract class _UserModel extends UserModel {
   DateTime? get createdAt => throw _privateConstructorUsedError;
   @override
   DateTime? get updatedAt => throw _privateConstructorUsedError;
+  @override
+  CustomType? get customType => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$UserModelCopyWith<_UserModel> get copyWith =>
