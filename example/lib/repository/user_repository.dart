@@ -1,5 +1,6 @@
 import 'package:crud_table/model/data_repository.dart';
 import 'package:crud_table_example/models/user.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class UserRepository extends DataRepository<UserModel> {
   List<UserModel> users = List.generate(
@@ -15,6 +16,7 @@ class UserRepository extends DataRepository<UserModel> {
       createdAt: DateTime.now().subtract(Duration(days: index)),
       updatedAt: DateTime.now().subtract(Duration(days: index)),
       customType: CustomType('$index'),
+      location: LatLng(0, 0),
     ),
   );
 

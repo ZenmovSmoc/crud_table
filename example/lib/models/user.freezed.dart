@@ -28,6 +28,7 @@ class _$UserModelTearOff {
       String? address,
       String? nationality,
       String? fcmToken,
+      LatLng? location,
       DateTime? createdAt,
       DateTime? updatedAt,
       CustomType? customType}) {
@@ -39,6 +40,7 @@ class _$UserModelTearOff {
       address: address,
       nationality: nationality,
       fcmToken: fcmToken,
+      location: location,
       createdAt: createdAt,
       updatedAt: updatedAt,
       customType: customType,
@@ -62,6 +64,7 @@ mixin _$UserModel {
   String? get address => throw _privateConstructorUsedError;
   String? get nationality => throw _privateConstructorUsedError;
   String? get fcmToken => throw _privateConstructorUsedError;
+  LatLng? get location => throw _privateConstructorUsedError;
   DateTime? get createdAt => throw _privateConstructorUsedError;
   DateTime? get updatedAt => throw _privateConstructorUsedError;
   CustomType? get customType => throw _privateConstructorUsedError;
@@ -84,6 +87,7 @@ abstract class $UserModelCopyWith<$Res> {
       String? address,
       String? nationality,
       String? fcmToken,
+      LatLng? location,
       DateTime? createdAt,
       DateTime? updatedAt,
       CustomType? customType});
@@ -106,6 +110,7 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
     Object? address = freezed,
     Object? nationality = freezed,
     Object? fcmToken = freezed,
+    Object? location = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
     Object? customType = freezed,
@@ -139,6 +144,10 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
           ? _value.fcmToken
           : fcmToken // ignore: cast_nullable_to_non_nullable
               as String?,
+      location: location == freezed
+          ? _value.location
+          : location // ignore: cast_nullable_to_non_nullable
+              as LatLng?,
       createdAt: createdAt == freezed
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -169,6 +178,7 @@ abstract class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Res> {
       String? address,
       String? nationality,
       String? fcmToken,
+      LatLng? location,
       DateTime? createdAt,
       DateTime? updatedAt,
       CustomType? customType});
@@ -192,6 +202,7 @@ class __$UserModelCopyWithImpl<$Res> extends _$UserModelCopyWithImpl<$Res>
     Object? address = freezed,
     Object? nationality = freezed,
     Object? fcmToken = freezed,
+    Object? location = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
     Object? customType = freezed,
@@ -225,6 +236,10 @@ class __$UserModelCopyWithImpl<$Res> extends _$UserModelCopyWithImpl<$Res>
           ? _value.fcmToken
           : fcmToken // ignore: cast_nullable_to_non_nullable
               as String?,
+      location: location == freezed
+          ? _value.location
+          : location // ignore: cast_nullable_to_non_nullable
+              as LatLng?,
       createdAt: createdAt == freezed
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -252,6 +267,7 @@ class _$_UserModel extends _UserModel with DiagnosticableTreeMixin {
       this.address,
       this.nationality,
       this.fcmToken,
+      this.location,
       this.createdAt,
       this.updatedAt,
       this.customType})
@@ -275,6 +291,8 @@ class _$_UserModel extends _UserModel with DiagnosticableTreeMixin {
   @override
   final String? fcmToken;
   @override
+  final LatLng? location;
+  @override
   final DateTime? createdAt;
   @override
   final DateTime? updatedAt;
@@ -283,7 +301,7 @@ class _$_UserModel extends _UserModel with DiagnosticableTreeMixin {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'UserModel(docId: $docId, name: $name, tel: $tel, email: $email, address: $address, nationality: $nationality, fcmToken: $fcmToken, createdAt: $createdAt, updatedAt: $updatedAt, customType: $customType)';
+    return 'UserModel(docId: $docId, name: $name, tel: $tel, email: $email, address: $address, nationality: $nationality, fcmToken: $fcmToken, location: $location, createdAt: $createdAt, updatedAt: $updatedAt, customType: $customType)';
   }
 
   @override
@@ -298,6 +316,7 @@ class _$_UserModel extends _UserModel with DiagnosticableTreeMixin {
       ..add(DiagnosticsProperty('address', address))
       ..add(DiagnosticsProperty('nationality', nationality))
       ..add(DiagnosticsProperty('fcmToken', fcmToken))
+      ..add(DiagnosticsProperty('location', location))
       ..add(DiagnosticsProperty('createdAt', createdAt))
       ..add(DiagnosticsProperty('updatedAt', updatedAt))
       ..add(DiagnosticsProperty('customType', customType));
@@ -324,6 +343,9 @@ class _$_UserModel extends _UserModel with DiagnosticableTreeMixin {
             (identical(other.fcmToken, fcmToken) ||
                 const DeepCollectionEquality()
                     .equals(other.fcmToken, fcmToken)) &&
+            (identical(other.location, location) ||
+                const DeepCollectionEquality()
+                    .equals(other.location, location)) &&
             (identical(other.createdAt, createdAt) ||
                 const DeepCollectionEquality()
                     .equals(other.createdAt, createdAt)) &&
@@ -345,6 +367,7 @@ class _$_UserModel extends _UserModel with DiagnosticableTreeMixin {
       const DeepCollectionEquality().hash(address) ^
       const DeepCollectionEquality().hash(nationality) ^
       const DeepCollectionEquality().hash(fcmToken) ^
+      const DeepCollectionEquality().hash(location) ^
       const DeepCollectionEquality().hash(createdAt) ^
       const DeepCollectionEquality().hash(updatedAt) ^
       const DeepCollectionEquality().hash(customType);
@@ -369,6 +392,7 @@ abstract class _UserModel extends UserModel {
       String? address,
       String? nationality,
       String? fcmToken,
+      LatLng? location,
       DateTime? createdAt,
       DateTime? updatedAt,
       CustomType? customType}) = _$_UserModel;
@@ -391,6 +415,8 @@ abstract class _UserModel extends UserModel {
   String? get nationality => throw _privateConstructorUsedError;
   @override
   String? get fcmToken => throw _privateConstructorUsedError;
+  @override
+  LatLng? get location => throw _privateConstructorUsedError;
   @override
   DateTime? get createdAt => throw _privateConstructorUsedError;
   @override

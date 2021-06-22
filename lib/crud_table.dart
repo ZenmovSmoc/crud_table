@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'util/confirmation_dialog.dart';
 
 typedef ItemCreator<S> = S Function();
-typedef CustomHandler<S> = DataCell Function(S);
+typedef CustomHandler<T extends DataModel> = DataCell Function(T);
 
 class CRUDTable<T extends DataModel> extends StatefulWidget {
   final String headerTitle;
@@ -200,14 +200,19 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
 
     params.forEach(
       (element, type) {
+        final isCustomType =
+            widget.customDisplayHandlers?.containsKey(type) ?? false;
+
         columns.add(
           DataColumn2(
             label: Text(element.toString()),
-            onSort: (columnIndex, ascending) => _notifier.sort(
-              key: element,
-              columnIndex: columnIndex,
-              ascending: ascending,
-            ),
+            onSort: isCustomType
+                ? null
+                : (columnIndex, ascending) => _notifier.sort(
+                      key: element,
+                      columnIndex: columnIndex,
+                      ascending: ascending,
+                    ),
           ),
         );
       },

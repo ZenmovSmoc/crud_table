@@ -1,20 +1,14 @@
-import 'package:intl/intl.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 String initTextEditingValue(Type type, dynamic data) {
   switch (type) {
-    case DateTime:
-      final dateString =
-          DateFormat('yyyy/MM/dd HH:mm').format(data ?? DateTime.now());
-      return dateString;
-    // NOTE 必要だったら個別に定義
-    // case Image:
-    //   return data?.toString() ?? '';
-    // case GeoPoint:
-    //   return data?.toString() ?? '';
-    // case List:
-    //   return data?.toString() ?? '';
-    // case num:
-    //   return data?.toString() ?? '';
+    case LatLng:
+      if (data != null) {
+        final _data = data as LatLng;
+        return '${_data.latitude},${_data.longitude}';
+      } else {
+        return '';
+      }
     default:
       return data?.toString() ?? '';
   }

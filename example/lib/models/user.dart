@@ -1,6 +1,7 @@
 import 'package:crud_table/model/data_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 part 'user.freezed.dart';
 part 'user.g.dart';
@@ -23,6 +24,7 @@ class UserModel with _$UserModel, DataModel {
     String? address,
     String? nationality,
     String? fcmToken,
+    LatLng? location,
     DateTime? createdAt,
     DateTime? updatedAt,
     CustomType? customType,
@@ -39,6 +41,8 @@ class UserModel with _$UserModel, DataModel {
       'nationality': String,
       'tel': String,
       'address': String,
+      'location': LatLng,
+      'createdAt': DateTime,
     };
   }
 
@@ -48,23 +52,16 @@ class UserModel with _$UserModel, DataModel {
       'name': String,
       'email': String,
       'nationality': String,
-      'tel': String,
       'address': String,
+      'location': LatLng,
       'createdAt': DateTime,
-      'updatedAt': DateTime,
       'customType': CustomType,
     };
   }
 
   @override
   Map<String, Type> getEditableParamsList() {
-    return {
-      'name': String,
-      'email': String,
-      'nationality': String,
-      'tel': String,
-      'address': String,
-    };
+    return this.getCreateParamsList();
   }
 
   @override
@@ -79,11 +76,12 @@ class UserModel with _$UserModel, DataModel {
       'createdAt': this.createdAt,
       'updatedAt': this.updatedAt,
       'customType': this.customType,
+      'location': this.location,
     };
   }
 
   @override
-  DataModel setParameter(String key, value) {
+  DataModel setParameter(String key, dynamic value) {
     switch (key) {
       case 'name':
         return this.copyWith(name: value);
@@ -95,6 +93,10 @@ class UserModel with _$UserModel, DataModel {
         return this.copyWith(tel: value);
       case 'address':
         return this.copyWith(address: value);
+      case 'createdAt':
+        return this.copyWith(createdAt: value);
+      case 'location':
+        return this.copyWith(location: value);
       default:
         return this.copyWith();
     }

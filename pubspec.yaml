@@ -17,6 +17,11 @@ dependencies:
 
   data_table_2: ^2.0.3
 
+  date_time_picker: ^2.0.0
+
+  google_maps_flutter: ^2.0.6
+  google_maps_flutter_web: ^0.3.0+2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

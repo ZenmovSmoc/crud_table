@@ -78,7 +78,7 @@ class DataSource<T extends DataModel> extends DataTableSource {
               _defaultDataCell(map[element]),
             );
           } else {
-            final e = handler!.call(map[element]);
+            final e = handler!.call(item);
             cells.add(e);
           }
         } else {

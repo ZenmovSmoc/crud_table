@@ -2,6 +2,7 @@ import 'package:crud_table/crud_table.dart';
 import 'package:crud_table_example/models/user.dart';
 import 'package:crud_table_example/repository/user_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 void main() {
   runApp(MyApp());
@@ -29,18 +30,27 @@ class _MyAppState extends State<MyApp> {
             canAddEntry: true,
             customDisplayHandlers: {
               CustomType: (val) {
-                final type = val as CustomType;
+                final model = val as UserModel;
+
                 return DataCell(
                   Center(
                     child: ElevatedButton(
                       onPressed: () {
-                        print('tapped ${type.text}');
+                        print('tapped ${model.customType!.text}');
                       },
-                      child: Text(type.text),
+                      child: Text(model.customType!.text),
                     ),
                   ),
                 );
-              }
+              },
+              LatLng: (val) {
+                final model = val as UserModel;
+
+                return DataCell(
+                  Text(
+                      '${model.location!.latitude},${model.location!.longitude}'),
+                );
+              },
             },
           ),
         ),
