@@ -21,9 +21,26 @@ import 'package:crud_table/crud_table.dart';
 ## Basic Usage:
 ```dart
 CRUDTable<UserModel>(
-    headerTitle: 'User',
-    isEditable: true,
-    repository: UserRepository(),
-    instance: () => const UserModel(),
+  headerTitle: 'User',
+  repository: UserRepository(),
+  instance: () => const UserModel(),
+  isEditable: true,
+  canAddEntry: true,
+  customDisplayHandlers: {
+    CustomType: (val) {
+      final model = val as UserModel;
+
+      return DataCell(
+        Center(
+          child: ElevatedButton(
+            onPressed: () {
+              print('tapped ${model.customType!.text}');
+            },
+            child: Text(model.customType!.text),
+          ),
+        ),
+      );
+    },
+  }
 )
 ```
