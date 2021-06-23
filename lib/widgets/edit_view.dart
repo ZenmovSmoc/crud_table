@@ -74,7 +74,7 @@ class _EditViewState extends State<EditView> {
         key: _formKey,
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).scaffoldBackgroundColor,
             borderRadius: BorderRadius.circular(20),
           ),
           constraints: const BoxConstraints(maxWidth: 600),
@@ -308,7 +308,7 @@ class _MapPickerWidgetState extends State<MapPickerWidget>
       backgroundColor: Colors.transparent,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: BorderRadius.circular(20),
         ),
         constraints: const BoxConstraints(maxWidth: 600),
