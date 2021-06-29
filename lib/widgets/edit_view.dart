@@ -1,6 +1,8 @@
 import 'package:crud_table/model/data_model.dart';
 import 'package:crud_table/util/edit_utils.dart';
 import 'package:date_time_picker/date_time_picker.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -209,36 +211,85 @@ class TextFieldWidget extends StatelessWidget {
   }
 
   Widget mapTextField(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      enableInteractiveSelection: false,
-      readOnly: true,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      keyboardType: type == num ? TextInputType.number : TextInputType.text,
-      decoration: InputDecoration(
-        border: const OutlineInputBorder(),
-        labelText: keyType,
-        prefixIcon: const Icon(Icons.location_pin),
-      ),
-      onTap: () async {
+    LatLng? _location = data;
+    late GoogleMapController _controller;
+
+    return StatefulBuilder(builder: (context, setState) {
+      Future<void> onTap() async {
         final result = await showDialog<LatLng?>(
           context: context,
           barrierDismissible: false,
           barrierColor: Colors.transparent,
-          builder: (context) => MapPickerWidget(initialValue: data),
+          builder: (context) => MapPickerWidget(initialValue: _location),
         );
 
         if (result != null) {
-          controller.text = '${result.latitude},${result.longitude}';
+          controller.text =
+              '${result.latitude.toStringAsFixed(2)},${result.latitude.toStringAsFixed(2)}';
+          _controller.moveCamera(CameraUpdate.newLatLng(result));
+          setState(() => _location = result);
         }
-      },
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter some text';
-        }
-        return null;
-      },
-    );
+      }
+
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            height: 115,
+            width: 475,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(width: 0.5),
+              ),
+              child: GoogleMap(
+                onMapCreated: (controler) {
+                  _controller = controler;
+                },
+                onTap: (_) async => onTap(),
+                initialCameraPosition: CameraPosition(
+                  target: _location ??
+                      const LatLng(37.42796133580664, -122.085749655962),
+                  zoom: 12,
+                ),
+                markers: {
+                  if (_location != null)
+                    Marker(
+                      markerId: MarkerId(_location.toString()),
+                      position: _location!,
+                    )
+                },
+                compassEnabled: false,
+                rotateGesturesEnabled: false,
+                gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+                  Factory<OneSequenceGestureRecognizer>(
+                    () => ScaleGestureRecognizer(),
+                  ),
+                },
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          TextFormField(
+            controller: controller,
+            enableInteractiveSelection: false,
+            readOnly: true,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              labelText: keyType,
+              prefixIcon: const Icon(Icons.location_pin),
+            ),
+            onTap: onTap,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
+          ),
+        ],
+      );
+    });
   }
 
   @override
