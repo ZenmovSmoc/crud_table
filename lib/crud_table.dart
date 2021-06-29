@@ -22,6 +22,7 @@ class CRUDTable<T extends DataModel> extends StatefulWidget {
   final ItemCreator<T> instance;
   final Map<Type, CustomHandler>? customDisplayHandlers;
   final EdgeInsetsGeometry padding;
+  final double? minWidth;
 
   const CRUDTable({
     Key? key,
@@ -30,8 +31,9 @@ class CRUDTable<T extends DataModel> extends StatefulWidget {
     this.canAddEntry = true,
     required this.repository,
     required this.instance,
-    this.padding = const EdgeInsets.all(12),
     this.customDisplayHandlers,
+    this.padding = const EdgeInsets.all(12),
+    this.minWidth,
   }) : super(key: key);
 
   @override
@@ -97,6 +99,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
                 horizontalMargin: 20,
                 checkboxHorizontalMargin: 12,
                 columnSpacing: 0,
+                minWidth: widget.minWidth,
               ),
             ),
             if (state.updateData)
