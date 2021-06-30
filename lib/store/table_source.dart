@@ -73,14 +73,8 @@ class DataSource<T extends DataModel> extends DataTableSource {
             _customHandlers!.containsKey(type)) {
           final handler = _customHandlers![type];
 
-          if (map[element] == null) {
-            cells.add(
-              _defaultDataCell(map[element]),
-            );
-          } else {
-            final e = handler!.call(item);
-            cells.add(e);
-          }
+          final e = handler!.call(item);
+          cells.add(e);
         } else {
           cells.add(
             _defaultDataCell(map[element]),

@@ -23,6 +23,7 @@ class CRUDTable<T extends DataModel> extends StatefulWidget {
   final Map<Type, CustomHandler>? customDisplayHandlers;
   final EdgeInsetsGeometry padding;
   final double? minWidth;
+  final double dataRowHeight;
 
   const CRUDTable({
     Key? key,
@@ -34,6 +35,7 @@ class CRUDTable<T extends DataModel> extends StatefulWidget {
     this.customDisplayHandlers,
     this.padding = const EdgeInsets.all(12),
     this.minWidth,
+    this.dataRowHeight = kMinInteractiveDimension,
   }) : super(key: key);
 
   @override
@@ -100,6 +102,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
                 checkboxHorizontalMargin: 12,
                 columnSpacing: 0,
                 minWidth: widget.minWidth,
+                dataRowHeight: widget.dataRowHeight,
               ),
             ),
             if (state.updateData)
