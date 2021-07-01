@@ -26,6 +26,9 @@ CRUDTable<UserModel>(
   instance: () => const UserModel(),
   isEditable: true,
   canAddEntry: true,
+  padding: const EdgeInsets.all(12),
+  minWidth: 100,
+  dataRowHeight: 48,
   customDisplayHandlers: {
     CustomType: (val) {
       final model = val as UserModel;
