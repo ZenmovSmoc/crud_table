@@ -29,7 +29,7 @@ class _MyAppState extends State<MyApp> {
             isEditable: true,
             canAddEntry: true,
             customDisplayHandlers: {
-              CustomType: (val) {
+              CustomType: (val, refresh) {
                 final model = val as UserModel;
 
                 return DataCell(
@@ -37,13 +37,14 @@ class _MyAppState extends State<MyApp> {
                     child: ElevatedButton(
                       onPressed: () {
                         print('tapped ${model.customType!.text}');
+                        refresh.call();
                       },
                       child: Text(model.customType!.text),
                     ),
                   ),
                 );
               },
-              LatLng: (val) {
+              LatLng: (val, _) {
                 final model = val as UserModel;
 
                 return DataCell(

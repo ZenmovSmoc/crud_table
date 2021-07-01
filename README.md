@@ -30,7 +30,7 @@ CRUDTable<UserModel>(
   minWidth: 100,
   dataRowHeight: 48,
   customDisplayHandlers: {
-    CustomType: (val) {
+    CustomType: (val, refresh) {
       final model = val as UserModel;
 
       return DataCell(
@@ -38,6 +38,7 @@ CRUDTable<UserModel>(
           child: ElevatedButton(
             onPressed: () {
               print('tapped ${model.customType!.text}');
+              refresh.call();
             },
             child: Text(model.customType!.text),
           ),

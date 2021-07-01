@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../crud_table.dart';
 
+// ignore_for_file: avoid_setters_without_getters
 class DataSource<T extends DataModel> extends DataTableSource {
   DataSource(this.data, {this.lastUpdateTime});
 
@@ -14,6 +15,7 @@ class DataSource<T extends DataModel> extends DataTableSource {
 
   late Function(T) _editHandler;
   late Function(T) _deleteHandler;
+  late VoidCallback _refreshHandler;
 
   late Map<Type, CustomHandler>? _customHandlers;
 
@@ -23,6 +25,10 @@ class DataSource<T extends DataModel> extends DataTableSource {
 
   set deleteHandler(Function(T) handler) {
     _deleteHandler = handler;
+  }
+
+  set refreshHandler(VoidCallback handler) {
+    _refreshHandler = handler;
   }
 
   set isEditable(bool editable) {
@@ -73,7 +79,7 @@ class DataSource<T extends DataModel> extends DataTableSource {
             _customHandlers!.containsKey(type)) {
           final handler = _customHandlers![type];
 
-          final e = handler!.call(item);
+          final e = handler!.call(item, _refreshHandler);
           cells.add(e);
         } else {
           cells.add(

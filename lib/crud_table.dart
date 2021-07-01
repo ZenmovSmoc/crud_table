@@ -12,7 +12,8 @@ import 'package:flutter/material.dart';
 import 'util/confirmation_dialog.dart';
 
 typedef ItemCreator<S> = S Function();
-typedef CustomHandler<T extends DataModel> = DataCell Function(T);
+typedef CustomHandler<T extends DataModel> = DataCell Function(
+    T, VoidCallback refresh);
 
 class CRUDTable<T extends DataModel> extends StatefulWidget {
   final String headerTitle;
@@ -82,6 +83,9 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
             if (result != null && result) {
               _notifier.delete(model);
             }
+          };
+          state.tableDataSource!.refreshHandler = () {
+            _notifier.init();
           };
         }
 
