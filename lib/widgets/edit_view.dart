@@ -235,7 +235,7 @@ class TextFieldWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
-            height: 115,
+            height: 230,
             width: 475,
             child: Container(
               decoration: BoxDecoration(

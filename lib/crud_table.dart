@@ -154,6 +154,9 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
 
   List<Widget> buildActions({String? filterBy}) {
     final params = widget.instance.call().getDisplayParamsList();
+    final customHandlers = widget.customDisplayHandlers?.keys.toList() ?? [];
+
+    params.removeWhere((key, value) => customHandlers.contains(value));
 
     final dropDownItems = params.entries
         .map((e) => DropdownMenuItem<String>(

@@ -42,7 +42,6 @@ class UserModel with _$UserModel, DataModel {
       'tel': String,
       'address': String,
       'location': LatLng,
-      'createdAt': DateTime,
     };
   }
 

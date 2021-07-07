@@ -95,18 +95,21 @@ class DataSource<T extends DataModel> extends DataTableSource {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              IconButton(
-                icon: const Icon(Icons.edit, color: Colors.blue),
-                onPressed: () {
-                  _editHandler(item);
-                },
+              Flexible(
+                child: IconButton(
+                  icon: const Icon(Icons.edit, color: Colors.blue),
+                  onPressed: () {
+                    _editHandler(item);
+                  },
+                ),
               ),
-              const SizedBox(width: 2),
-              IconButton(
-                icon: const Icon(Icons.delete, color: Colors.red),
-                onPressed: () {
-                  _deleteHandler(item);
-                },
+              Flexible(
+                child: IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  onPressed: () {
+                    _deleteHandler(item);
+                  },
+                ),
               )
             ],
           ),
