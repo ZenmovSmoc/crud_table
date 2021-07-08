@@ -45,6 +45,12 @@ CRUDTable<UserModel>(
         ),
       );
     },
-  }
+  },
+  customEditHandlers: {
+    CustomType: (data, controller) {
+      controller.text = 'DATA'; // set text data using controller.text
+      return Container();
+    }
+  },
 )
 ```

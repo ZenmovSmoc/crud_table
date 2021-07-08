@@ -53,6 +53,12 @@ class _MyAppState extends State<MyApp> {
                 );
               },
             },
+            customEditHandlers: {
+              CustomType: (data, controller) {
+                controller.text = 'DATA'; // set text data using controller.text
+                return Container();
+              }
+            },
           ),
         ),
       ),

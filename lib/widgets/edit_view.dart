@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:crud_table/model/data_model.dart';
 import 'package:crud_table/util/edit_utils.dart';
 import 'package:date_time_picker/date_time_picker.dart';
@@ -6,16 +8,20 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../crud_table.dart';
+
 enum EditType { add, update }
 
 class EditView<T extends DataModel> extends StatefulWidget {
   final EditType type;
   final T data;
+  final Map<Type, CustomEditHandler>? customEditHandlers;
 
   const EditView({
     Key? key,
     required this.type,
     required this.data,
+    this.customEditHandlers,
   }) : super(key: key);
 
   @override
@@ -57,6 +63,7 @@ class _EditViewState extends State<EditView> {
               type: type,
               controller: _controller,
               data: dataMap[key],
+              customEditHandlers: widget.customEditHandlers,
             ),
           ),
         );
@@ -113,24 +120,7 @@ class _EditViewState extends State<EditView> {
                       DataModel _data = widget.data;
 
                       _formControllers.forEach((key, value) {
-                        final type = _parameters[key];
-
-                        switch (type) {
-                          case DateTime:
-                            _data = _data.setParameter(
-                                key, DateTime.parse(value.text));
-                            break;
-                          case LatLng:
-                            final data = value.text.split(',');
-                            _data = _data.setParameter(
-                                key,
-                                LatLng(double.parse(data[0]),
-                                    double.parse(data[1])));
-                            break;
-                          default:
-                            _data = _data.setParameter(key, value.text);
-                            break;
-                        }
+                        _data = _data.setParameter(key, value.text);
                       });
 
                       Navigator.of(context).pop(_data);
@@ -164,12 +154,15 @@ class TextFieldWidget extends StatelessWidget {
   final dynamic data;
   final TextEditingController controller;
 
+  final Map<Type, CustomEditHandler>? customEditHandlers;
+
   const TextFieldWidget({
     Key? key,
     required this.keyType,
     required this.type,
     this.data,
     required this.controller,
+    this.customEditHandlers,
   }) : super(key: key);
 
   Widget textField() {
@@ -224,8 +217,12 @@ class TextFieldWidget extends StatelessWidget {
         );
 
         if (result != null) {
-          controller.text =
-              '${result.latitude.toStringAsFixed(2)},${result.latitude.toStringAsFixed(2)}';
+          final data = <String, String>{
+            'latitude': '${result.latitude}',
+            'longitude': '${result.longitude}',
+          };
+
+          controller.text = json.encode(data);
           _controller.moveCamera(CameraUpdate.newLatLng(result));
           setState(() => _location = result);
         }
@@ -294,6 +291,10 @@ class TextFieldWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (customEditHandlers != null && customEditHandlers!.containsKey(type)) {
+      return customEditHandlers![type]!.call(data, controller);
+    }
+
     switch (type) {
       case DateTime:
         return dateTimeTextField();

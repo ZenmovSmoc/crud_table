@@ -24,7 +24,6 @@ class UserRepository extends DataRepository<UserModel> {
   Future<void> create(UserModel model) async {
     await Future.delayed(const Duration(seconds: 1));
     users.add(model.copyWith(
-      createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     ));
   }

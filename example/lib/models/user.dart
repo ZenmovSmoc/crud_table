@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:crud_table/model/data_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
@@ -39,9 +41,7 @@ class UserModel with _$UserModel, DataModel {
       'name': String,
       'email': String,
       'nationality': String,
-      'tel': String,
-      'address': String,
-      'location': LatLng,
+      'customType': CustomType,
     };
   }
 
@@ -51,9 +51,6 @@ class UserModel with _$UserModel, DataModel {
       'name': String,
       'email': String,
       'nationality': String,
-      'address': String,
-      'location': LatLng,
-      'createdAt': DateTime,
       'customType': CustomType,
     };
   }
@@ -80,7 +77,7 @@ class UserModel with _$UserModel, DataModel {
   }
 
   @override
-  DataModel setParameter(String key, dynamic value) {
+  DataModel setParameter(String key, String value) {
     switch (key) {
       case 'name':
         return this.copyWith(name: value);
@@ -93,9 +90,17 @@ class UserModel with _$UserModel, DataModel {
       case 'address':
         return this.copyWith(address: value);
       case 'createdAt':
-        return this.copyWith(createdAt: value);
+        return this.copyWith(createdAt: DateTime.parse(value));
       case 'location':
-        return this.copyWith(location: value);
+        final Map<String, dynamic> data = json.decode(value);
+
+        return this.copyWith(
+            location: LatLng(
+          double.parse(data['latitude']),
+          double.parse(data['longitude']),
+        ));
+      case 'customType':
+        return this.copyWith(customType: CustomType(value));
       default:
         return this.copyWith();
     }

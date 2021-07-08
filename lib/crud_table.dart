@@ -15,6 +15,8 @@ typedef ItemCreator<S> = S Function();
 typedef CustomHandler<T extends DataModel> = DataCell Function(
     T, VoidCallback refresh);
 
+typedef CustomEditHandler<T> = Widget Function(T, TextEditingController);
+
 class CRUDTable<T extends DataModel> extends StatefulWidget {
   final String headerTitle;
   final bool isEditable;
@@ -22,6 +24,7 @@ class CRUDTable<T extends DataModel> extends StatefulWidget {
   final DataRepository repository;
   final ItemCreator<T> instance;
   final Map<Type, CustomHandler>? customDisplayHandlers;
+  final Map<Type, CustomEditHandler>? customEditHandlers;
   final EdgeInsetsGeometry padding;
   final double? minWidth;
   final double dataRowHeight;
@@ -37,6 +40,7 @@ class CRUDTable<T extends DataModel> extends StatefulWidget {
     this.padding = const EdgeInsets.all(12),
     this.minWidth,
     this.dataRowHeight = kMinInteractiveDimension,
+    this.customEditHandlers,
   }) : super(key: key);
 
   @override
@@ -71,6 +75,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
               builder: (context) => EditView(
                 type: EditType.update,
                 data: model,
+                customEditHandlers: widget.customEditHandlers,
               ),
             );
 
@@ -196,6 +201,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
               builder: (context) => EditView(
                 type: EditType.add,
                 data: widget.instance.call(),
+                customEditHandlers: widget.customEditHandlers,
               ),
             );
 

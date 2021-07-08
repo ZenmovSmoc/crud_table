@@ -9,5 +9,5 @@ abstract class DataModel {
 
   Map<String, dynamic> toMap();
 
-  DataModel setParameter(String key, dynamic value);
+  DataModel setParameter(String key, String value);
 }
