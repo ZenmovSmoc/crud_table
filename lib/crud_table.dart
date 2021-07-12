@@ -54,9 +54,14 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
   void initState() {
     super.initState();
 
+    final displayParams = widget.instance.call().getDisplayParamsList();
+    final customHandlers = widget.customDisplayHandlers?.keys.toList() ?? [];
+
+    displayParams.removeWhere((key, value) => customHandlers.contains(value));
+
     _notifier = TableStateNotifier(
       repository: widget.repository,
-      displayParameters: widget.instance.call().getDisplayParamsList(),
+      displayParameters: displayParams,
     );
   }
 
