@@ -1,6 +1,6 @@
 name: crud_table
 description: A package for creating CRUD Admin tables.
-version: 0.3.1
+version: 0.3.2
 homepage:
 
 environment:
@@ -11,23 +11,23 @@ dependencies:
   flutter:
     sdk: flutter
   
-  freezed_annotation: ^0.14.2
+  freezed_annotation: ^1.1.0
 
   intl: ^0.17.0
 
-  data_table_2: ^2.0.3
+  data_table_2: ^2.2.0
 
-  date_time_picker: ^2.0.0
+  date_time_picker: ^2.1.0
 
-  google_maps_flutter: ^2.0.6
-  google_maps_flutter_web: ^0.3.0+2
+  google_maps_flutter: ^2.1.1
+  google_maps_flutter_web: ^0.3.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  build_runner: ^2.0.4
-  freezed: ^0.14.2
-  lint: ^1.5.3
+  build_runner: ^2.1.5
+  freezed: ^1.1.0
+  lint: ^1.8.1
 
 flutter:

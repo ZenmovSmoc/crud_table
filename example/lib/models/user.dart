@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 part 'user.freezed.dart';
-part 'user.g.dart';
 
 class CustomType {
   final String text;
@@ -32,8 +31,8 @@ class UserModel with _$UserModel, DataModel {
     CustomType? customType,
   }) = _UserModel;
 
-  factory UserModel.fromJson(Map<String, dynamic> json) =>
-      _$UserModelFromJson(json);
+  // factory UserModel.fromJson(Map<String, dynamic> json) =>
+  //     _$UserModelFromJson(json);
 
   @override
   Map<String, Type> getCreateParamsList() {

@@ -1,5 +1,6 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'table_state.dart';
 
@@ -263,44 +264,35 @@ class _$_TableState<T extends DataModel>
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _TableState<T> &&
-            (identical(other.rowsPerPage, rowsPerPage) ||
-                const DeepCollectionEquality()
-                    .equals(other.rowsPerPage, rowsPerPage)) &&
-            (identical(other.sortColumnIndex, sortColumnIndex) ||
-                const DeepCollectionEquality()
-                    .equals(other.sortColumnIndex, sortColumnIndex)) &&
-            (identical(other.sortAscending, sortAscending) ||
-                const DeepCollectionEquality()
-                    .equals(other.sortAscending, sortAscending)) &&
-            (identical(other.updateData, updateData) ||
-                const DeepCollectionEquality()
-                    .equals(other.updateData, updateData)) &&
-            (identical(other.loading, loading) ||
-                const DeepCollectionEquality()
-                    .equals(other.loading, loading)) &&
-            (identical(other.filterBy, filterBy) ||
-                const DeepCollectionEquality()
-                    .equals(other.filterBy, filterBy)) &&
-            (identical(other.filterText, filterText) ||
-                const DeepCollectionEquality()
-                    .equals(other.filterText, filterText)) &&
-            (identical(other.tableDataSource, tableDataSource) ||
-                const DeepCollectionEquality()
-                    .equals(other.tableDataSource, tableDataSource)));
+        (other.runtimeType == runtimeType &&
+            other is _TableState<T> &&
+            const DeepCollectionEquality()
+                .equals(other.rowsPerPage, rowsPerPage) &&
+            const DeepCollectionEquality()
+                .equals(other.sortColumnIndex, sortColumnIndex) &&
+            const DeepCollectionEquality()
+                .equals(other.sortAscending, sortAscending) &&
+            const DeepCollectionEquality()
+                .equals(other.updateData, updateData) &&
+            const DeepCollectionEquality().equals(other.loading, loading) &&
+            const DeepCollectionEquality().equals(other.filterBy, filterBy) &&
+            const DeepCollectionEquality()
+                .equals(other.filterText, filterText) &&
+            const DeepCollectionEquality()
+                .equals(other.tableDataSource, tableDataSource));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(rowsPerPage) ^
-      const DeepCollectionEquality().hash(sortColumnIndex) ^
-      const DeepCollectionEquality().hash(sortAscending) ^
-      const DeepCollectionEquality().hash(updateData) ^
-      const DeepCollectionEquality().hash(loading) ^
-      const DeepCollectionEquality().hash(filterBy) ^
-      const DeepCollectionEquality().hash(filterText) ^
-      const DeepCollectionEquality().hash(tableDataSource);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(rowsPerPage),
+      const DeepCollectionEquality().hash(sortColumnIndex),
+      const DeepCollectionEquality().hash(sortAscending),
+      const DeepCollectionEquality().hash(updateData),
+      const DeepCollectionEquality().hash(loading),
+      const DeepCollectionEquality().hash(filterBy),
+      const DeepCollectionEquality().hash(filterText),
+      const DeepCollectionEquality().hash(tableDataSource));
 
   @JsonKey(ignore: true)
   @override
@@ -320,22 +312,21 @@ abstract class _TableState<T extends DataModel> implements TableState<T> {
       DataSource<DataModel>? tableDataSource}) = _$_TableState<T>;
 
   @override
-  int get rowsPerPage => throw _privateConstructorUsedError;
+  int get rowsPerPage;
   @override
-  int get sortColumnIndex => throw _privateConstructorUsedError;
+  int get sortColumnIndex;
   @override
-  bool get sortAscending => throw _privateConstructorUsedError;
+  bool get sortAscending;
   @override
-  bool get updateData => throw _privateConstructorUsedError;
+  bool get updateData;
   @override
-  bool get loading => throw _privateConstructorUsedError;
+  bool get loading;
   @override
-  String? get filterBy => throw _privateConstructorUsedError;
+  String? get filterBy;
   @override
-  String? get filterText => throw _privateConstructorUsedError;
+  String? get filterText;
   @override
-  DataSource<DataModel>? get tableDataSource =>
-      throw _privateConstructorUsedError;
+  DataSource<DataModel>? get tableDataSource;
   @override
   @JsonKey(ignore: true)
   _$TableStateCopyWith<T, _TableState<T>> get copyWith =>
