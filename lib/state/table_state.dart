@@ -1,7 +1,7 @@
 import 'package:crud_table/model/data_model.dart';
 import 'package:crud_table/store/table_source.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'table_state.freezed.dart';
 

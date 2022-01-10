@@ -14,15 +14,17 @@ class TableStateNotifier<T extends DataModel>
   TableStateNotifier({
     required this.repository,
     required this.displayParameters,
-  }) : super(TableState(
-          rowsPerPage: PaginatedDataTable.defaultRowsPerPage,
-          sortAscending: true,
-          updateData: false,
-          sortColumnIndex: 0,
-          loading: false,
-          filterBy: displayParameters.entries.first.key,
-          tableDataSource: DataSource<T>([]),
-        )) {
+  }) : super(
+          TableState(
+            rowsPerPage: PaginatedDataTable.defaultRowsPerPage,
+            sortAscending: true,
+            updateData: false,
+            sortColumnIndex: 0,
+            loading: false,
+            filterBy: displayParameters.entries.first.key,
+            tableDataSource: DataSource<T>([]),
+          ),
+        ) {
     init();
     _initStream();
   }
@@ -75,7 +77,8 @@ class TableStateNotifier<T extends DataModel>
   }
 
   void rowsPerPage(int? rowsPerPage) => value = value.copyWith(
-      rowsPerPage: rowsPerPage ?? PaginatedDataTable.defaultRowsPerPage);
+        rowsPerPage: rowsPerPage ?? PaginatedDataTable.defaultRowsPerPage,
+      );
 
   void sortColumnIndex(int sortColumnIndex) =>
       value = value.copyWith(sortColumnIndex: sortColumnIndex);
@@ -121,6 +124,13 @@ class TableStateNotifier<T extends DataModel>
       (a, b) {
         final aMap = a.toMap();
         final bMap = b.toMap();
+
+        if (aMap[key] == null) {
+          return 1;
+        }
+        if (bMap[key] == null) {
+          return -1;
+        }
 
         final Comparable aValue = aMap[key];
         final Comparable bValue = bMap[key];

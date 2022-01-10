@@ -11,7 +11,7 @@ class UserRepository extends DataRepository<UserModel> {
       tel: 'tel $index',
       email: 'email_$index@gmail.com',
       address: 'address $index',
-      nationality: 'nat $index',
+      nationality: index.isEven ? 'nat $index' : null,
       fcmToken: 'tok $index',
       createdAt: DateTime.now().subtract(Duration(days: index)),
       updatedAt: DateTime.now().subtract(Duration(days: index)),

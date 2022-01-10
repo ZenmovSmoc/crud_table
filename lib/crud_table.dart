@@ -4,43 +4,54 @@ import 'package:crud_table/model/data_model.dart';
 import 'package:crud_table/model/data_repository.dart';
 import 'package:crud_table/state/table_state.dart';
 import 'package:crud_table/store/table_notifier.dart';
+import 'package:crud_table/util/confirmation_dialog.dart';
 import 'package:crud_table/widgets/edit_view.dart';
 import 'package:data_table_2/data_table_2.dart';
-import 'package:data_table_2/paginated_data_table_2.dart';
 import 'package:flutter/material.dart';
-
-import 'util/confirmation_dialog.dart';
 
 typedef ItemCreator<S> = S Function();
 typedef CustomHandler<T extends DataModel> = DataCell Function(
-    T, VoidCallback refresh);
+  T,
+  VoidCallback refresh,
+);
 
-typedef CustomEditHandler<T> = Widget Function(T, TextEditingController);
+typedef CustomEditHandlers<T> = Widget Function(T, TextEditingController);
+
+typedef CustomAddHandler<T> = Future<T?> Function();
+typedef CustomEditHandler<T> = Future<T?> Function(T);
 
 class CRUDTable<T extends DataModel> extends StatefulWidget {
   final String headerTitle;
   final bool isEditable;
+  final bool isDeletable;
   final bool canAddEntry;
   final DataRepository repository;
   final ItemCreator<T> instance;
-  final Map<Type, CustomHandler>? customDisplayHandlers;
-  final Map<Type, CustomEditHandler>? customEditHandlers;
   final EdgeInsetsGeometry padding;
   final double? minWidth;
   final double dataRowHeight;
+  final void Function(DataModel)? onRowTap;
+  final Map<Type, CustomHandler>? customDisplayHandlers;
+  final Map<Type, CustomEditHandlers>? customEditHandlers;
+  final CustomAddHandler<T>? customAddHandler;
+  final CustomEditHandler<DataModel>? customEditHandler;
 
   const CRUDTable({
     Key? key,
     required this.headerTitle,
-    this.isEditable = true,
-    this.canAddEntry = true,
     required this.repository,
     required this.instance,
-    this.customDisplayHandlers,
+    this.isEditable = true,
+    this.canAddEntry = true,
+    this.isDeletable = true,
     this.padding = const EdgeInsets.all(12),
-    this.minWidth,
     this.dataRowHeight = kMinInteractiveDimension,
+    this.customDisplayHandlers,
+    this.minWidth,
     this.customEditHandlers,
+    this.onRowTap,
+    this.customAddHandler,
+    this.customEditHandler,
   }) : super(key: key);
 
   @override
@@ -72,17 +83,25 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
       builder: (context, state, child) {
         if (state.tableDataSource != null) {
           state.tableDataSource!.isEditable = widget.isEditable;
+          state.tableDataSource!.isDeletable = widget.isDeletable;
           state.tableDataSource!.customHandlers = widget.customDisplayHandlers;
+          state.tableDataSource!.rowTapHandler = widget.onRowTap;
           state.tableDataSource!.editHandler = (model) async {
-            final T? result = await showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (context) => EditView(
-                type: EditType.update,
-                data: model,
-                customEditHandlers: widget.customEditHandlers,
-              ),
-            );
+            DataModel? result;
+
+            if (widget.customEditHandler != null) {
+              result = await widget.customEditHandler!.call(model);
+            } else {
+              result = await showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => EditView(
+                  type: EditType.update,
+                  data: model,
+                  customEditHandlers: widget.customEditHandlers,
+                ),
+              );
+            }
 
             if (result != null) {
               _notifier.update(result);
@@ -117,6 +136,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
                 columnSpacing: 0,
                 minWidth: widget.minWidth,
                 dataRowHeight: widget.dataRowHeight,
+                showCheckboxColumn: false,
               ),
             ),
             if (state.updateData)
@@ -128,7 +148,9 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
                       primary: Colors.deepOrangeAccent,
                       minimumSize: const Size(88, 36),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 14),
+                        horizontal: 24,
+                        vertical: 14,
+                      ),
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(2)),
                       ),
@@ -169,10 +191,12 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
     params.removeWhere((key, value) => customHandlers.contains(value));
 
     final dropDownItems = params.entries
-        .map((e) => DropdownMenuItem<String>(
-              value: e.key,
-              child: Text(e.key),
-            ))
+        .map(
+          (e) => DropdownMenuItem<String>(
+            value: e.key,
+            child: Text(e.key),
+          ),
+        )
         .toList();
 
     return [
@@ -200,15 +224,21 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
         IconButton(
           icon: const Icon(Icons.add),
           onPressed: () async {
-            final T? result = await showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (context) => EditView(
-                type: EditType.add,
-                data: widget.instance.call(),
-                customEditHandlers: widget.customEditHandlers,
-              ),
-            );
+            DataModel? result;
+
+            if (widget.customAddHandler != null) {
+              result = await widget.customAddHandler!.call();
+            } else {
+              result = await showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => EditView(
+                  type: EditType.add,
+                  data: widget.instance.call(),
+                  customEditHandlers: widget.customEditHandlers,
+                ),
+              );
+            }
 
             if (result != null) {
               _notifier.create(result);
@@ -242,7 +272,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
       },
     );
 
-    if (widget.isEditable) {
+    if (widget.isEditable || widget.isDeletable) {
       columns.add(
         const DataColumn2(label: Text('Actions'), size: ColumnSize.S),
       );
