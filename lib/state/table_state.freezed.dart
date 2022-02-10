@@ -25,7 +25,8 @@ class _$TableStateTearOff {
       required bool loading,
       String? filterBy,
       String? filterText,
-      DataSource<DataModel>? tableDataSource}) {
+      DataSource<DataModel>? tableDataSource,
+      String? error}) {
     return _TableState<T>(
       rowsPerPage: rowsPerPage,
       sortColumnIndex: sortColumnIndex,
@@ -35,6 +36,7 @@ class _$TableStateTearOff {
       filterBy: filterBy,
       filterText: filterText,
       tableDataSource: tableDataSource,
+      error: error,
     );
   }
 }
@@ -53,6 +55,7 @@ mixin _$TableState<T extends DataModel> {
   String? get filterText => throw _privateConstructorUsedError;
   DataSource<DataModel>? get tableDataSource =>
       throw _privateConstructorUsedError;
+  String? get error => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $TableStateCopyWith<T, TableState<T>> get copyWith =>
@@ -72,7 +75,8 @@ abstract class $TableStateCopyWith<T extends DataModel, $Res> {
       bool loading,
       String? filterBy,
       String? filterText,
-      DataSource<DataModel>? tableDataSource});
+      DataSource<DataModel>? tableDataSource,
+      String? error});
 }
 
 /// @nodoc
@@ -94,6 +98,7 @@ class _$TableStateCopyWithImpl<T extends DataModel, $Res>
     Object? filterBy = freezed,
     Object? filterText = freezed,
     Object? tableDataSource = freezed,
+    Object? error = freezed,
   }) {
     return _then(_value.copyWith(
       rowsPerPage: rowsPerPage == freezed
@@ -128,6 +133,10 @@ class _$TableStateCopyWithImpl<T extends DataModel, $Res>
           ? _value.tableDataSource
           : tableDataSource // ignore: cast_nullable_to_non_nullable
               as DataSource<DataModel>?,
+      error: error == freezed
+          ? _value.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -147,7 +156,8 @@ abstract class _$TableStateCopyWith<T extends DataModel, $Res>
       bool loading,
       String? filterBy,
       String? filterText,
-      DataSource<DataModel>? tableDataSource});
+      DataSource<DataModel>? tableDataSource,
+      String? error});
 }
 
 /// @nodoc
@@ -171,6 +181,7 @@ class __$TableStateCopyWithImpl<T extends DataModel, $Res>
     Object? filterBy = freezed,
     Object? filterText = freezed,
     Object? tableDataSource = freezed,
+    Object? error = freezed,
   }) {
     return _then(_TableState<T>(
       rowsPerPage: rowsPerPage == freezed
@@ -205,6 +216,10 @@ class __$TableStateCopyWithImpl<T extends DataModel, $Res>
           ? _value.tableDataSource
           : tableDataSource // ignore: cast_nullable_to_non_nullable
               as DataSource<DataModel>?,
+      error: error == freezed
+          ? _value.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -222,7 +237,8 @@ class _$_TableState<T extends DataModel>
       required this.loading,
       this.filterBy,
       this.filterText,
-      this.tableDataSource});
+      this.tableDataSource,
+      this.error});
 
   @override
   final int rowsPerPage;
@@ -240,10 +256,12 @@ class _$_TableState<T extends DataModel>
   final String? filterText;
   @override
   final DataSource<DataModel>? tableDataSource;
+  @override
+  final String? error;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'TableState<$T>(rowsPerPage: $rowsPerPage, sortColumnIndex: $sortColumnIndex, sortAscending: $sortAscending, updateData: $updateData, loading: $loading, filterBy: $filterBy, filterText: $filterText, tableDataSource: $tableDataSource)';
+    return 'TableState<$T>(rowsPerPage: $rowsPerPage, sortColumnIndex: $sortColumnIndex, sortAscending: $sortAscending, updateData: $updateData, loading: $loading, filterBy: $filterBy, filterText: $filterText, tableDataSource: $tableDataSource, error: $error)';
   }
 
   @override
@@ -258,7 +276,8 @@ class _$_TableState<T extends DataModel>
       ..add(DiagnosticsProperty('loading', loading))
       ..add(DiagnosticsProperty('filterBy', filterBy))
       ..add(DiagnosticsProperty('filterText', filterText))
-      ..add(DiagnosticsProperty('tableDataSource', tableDataSource));
+      ..add(DiagnosticsProperty('tableDataSource', tableDataSource))
+      ..add(DiagnosticsProperty('error', error));
   }
 
   @override
@@ -279,7 +298,8 @@ class _$_TableState<T extends DataModel>
             const DeepCollectionEquality()
                 .equals(other.filterText, filterText) &&
             const DeepCollectionEquality()
-                .equals(other.tableDataSource, tableDataSource));
+                .equals(other.tableDataSource, tableDataSource) &&
+            const DeepCollectionEquality().equals(other.error, error));
   }
 
   @override
@@ -292,7 +312,8 @@ class _$_TableState<T extends DataModel>
       const DeepCollectionEquality().hash(loading),
       const DeepCollectionEquality().hash(filterBy),
       const DeepCollectionEquality().hash(filterText),
-      const DeepCollectionEquality().hash(tableDataSource));
+      const DeepCollectionEquality().hash(tableDataSource),
+      const DeepCollectionEquality().hash(error));
 
   @JsonKey(ignore: true)
   @override
@@ -309,7 +330,8 @@ abstract class _TableState<T extends DataModel> implements TableState<T> {
       required bool loading,
       String? filterBy,
       String? filterText,
-      DataSource<DataModel>? tableDataSource}) = _$_TableState<T>;
+      DataSource<DataModel>? tableDataSource,
+      String? error}) = _$_TableState<T>;
 
   @override
   int get rowsPerPage;
@@ -327,6 +349,8 @@ abstract class _TableState<T extends DataModel> implements TableState<T> {
   String? get filterText;
   @override
   DataSource<DataModel>? get tableDataSource;
+  @override
+  String? get error;
   @override
   @JsonKey(ignore: true)
   _$TableStateCopyWith<T, _TableState<T>> get copyWith =>

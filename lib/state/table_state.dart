@@ -16,5 +16,6 @@ class TableState<T extends DataModel> with _$TableState<T> {
     String? filterBy,
     String? filterText,
     DataSource? tableDataSource,
+    String? error,
   }) = _TableState;
 }

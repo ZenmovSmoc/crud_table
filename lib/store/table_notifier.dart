@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:crud_table/model/data_exception.dart';
 import 'package:crud_table/model/data_model.dart';
 import 'package:crud_table/model/data_repository.dart';
 import 'package:crud_table/state/table_state.dart';
@@ -44,7 +45,7 @@ class TableStateNotifier<T extends DataModel>
   }
 
   Future<void> init() async {
-    value = value.copyWith(loading: true);
+    setLoading();
 
     _data = await repository.fetch();
 
@@ -59,21 +60,36 @@ class TableStateNotifier<T extends DataModel>
   }
 
   Future<void> delete(T data) async {
-    value = value.copyWith(loading: true);
-    await repository.delete(data);
-    init();
+    setLoading();
+
+    try {
+      await repository.delete(data);
+      init();
+    } catch (ex) {
+      handleException(ex);
+    }
   }
 
   Future<void> create(T data) async {
-    value = value.copyWith(loading: true);
-    await repository.create(data);
-    init();
+    setLoading();
+
+    try {
+      await repository.create(data);
+      init();
+    } catch (ex) {
+      handleException(ex);
+    }
   }
 
   Future<void> update(T data) async {
-    value = value.copyWith(loading: true);
-    await repository.update(data);
-    init();
+    setLoading();
+
+    try {
+      await repository.update(data);
+      init();
+    } catch (ex) {
+      handleException(ex);
+    }
   }
 
   void rowsPerPage(int? rowsPerPage) => value = value.copyWith(
@@ -149,6 +165,22 @@ class TableStateNotifier<T extends DataModel>
 
     sortColumnIndex(columnIndex);
     sortAscending(sortAscending: ascending);
+  }
+
+  void setLoading() {
+    value = value.copyWith(loading: true, error: null);
+  }
+
+  void handleException(Object ex) {
+    String message = 'Error. Please try again';
+
+    if (ex is CrudException) {
+      message = ex.message;
+    }
+    value = value.copyWith(
+      error: message,
+      loading: false,
+    );
   }
 
   @override

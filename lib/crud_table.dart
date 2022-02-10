@@ -116,6 +116,17 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
           state.tableDataSource!.refreshHandler = () {
             _notifier.init();
           };
+
+          if (state.error != null) {
+            WidgetsBinding.instance?.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).removeCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.error ?? ''),
+                ),
+              );
+            });
+          }
         }
 
         return Stack(
