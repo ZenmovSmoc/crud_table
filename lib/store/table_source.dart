@@ -1,8 +1,7 @@
+import 'package:crud_table/crud_table.dart';
 import 'package:crud_table/model/data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import '../crud_table.dart';
 
 // ignore_for_file: avoid_setters_without_getters
 class DataSource<T extends DataModel> extends DataTableSource {
@@ -12,10 +11,12 @@ class DataSource<T extends DataModel> extends DataTableSource {
 
   final DateTime? lastUpdateTime;
   late bool _isEditable;
+  late bool _isDeletable;
 
   late Function(T) _editHandler;
   late Function(T) _deleteHandler;
   late VoidCallback _refreshHandler;
+  Function(T)? _onRowTap;
 
   late Map<Type, CustomHandler>? _customHandlers;
 
@@ -35,8 +36,16 @@ class DataSource<T extends DataModel> extends DataTableSource {
     _isEditable = editable;
   }
 
+  set isDeletable(bool deletable) {
+    _isDeletable = deletable;
+  }
+
   set customHandlers(Map<Type, CustomHandler>? customHandlers) {
     _customHandlers = customHandlers;
+  }
+
+  set rowTapHandler(void Function(T)? handler) {
+    _onRowTap = handler;
   }
 
   @override
@@ -48,6 +57,11 @@ class DataSource<T extends DataModel> extends DataTableSource {
     return DataRow.byIndex(
       index: index,
       cells: createDataCell(item),
+      onSelectChanged: _onRowTap != null
+          ? (selected) {
+              _onRowTap?.call(item);
+            }
+          : null,
     );
   }
 
@@ -77,7 +91,7 @@ class DataSource<T extends DataModel> extends DataTableSource {
           );
         } else if (_customHandlers != null &&
             _customHandlers!.containsKey(type)) {
-          final handler = _customHandlers![type];
+          final handler = _customHandlers?[type];
 
           final e = handler!.call(item, _refreshHandler);
           cells.add(e);
@@ -89,28 +103,30 @@ class DataSource<T extends DataModel> extends DataTableSource {
       },
     );
 
-    if (_isEditable) {
+    if (_isEditable || _isDeletable) {
       cells.add(
         DataCell(
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Flexible(
-                child: IconButton(
-                  icon: const Icon(Icons.edit, color: Colors.blue),
-                  onPressed: () {
-                    _editHandler(item);
-                  },
+              if (_isEditable)
+                Flexible(
+                  child: IconButton(
+                    icon: const Icon(Icons.edit, color: Colors.blue),
+                    onPressed: () {
+                      _editHandler(item);
+                    },
+                  ),
                 ),
-              ),
-              Flexible(
-                child: IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () {
-                    _deleteHandler(item);
-                  },
-                ),
-              )
+              if (_isDeletable)
+                Flexible(
+                  child: IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () {
+                      _deleteHandler(item);
+                    },
+                  ),
+                )
             ],
           ),
         ),

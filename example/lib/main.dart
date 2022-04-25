@@ -27,7 +27,27 @@ class _MyAppState extends State<MyApp> {
             repository: UserRepository(),
             instance: () => const UserModel(),
             isEditable: true,
+            isDeletable: true,
             canAddEntry: true,
+            onRowTap: (data) {
+              print('tapped! ${data}');
+            },
+            customAddHandler: () async {
+              final test = UserModel(
+                docId: '1',
+                name: 'asdf',
+                address: 'sadf',
+                email: 'asdf',
+                nationality: 'asdf',
+              );
+
+              return test;
+            },
+            customEditHandler: (val) async {
+              final model = val as UserModel;
+
+              return model.copyWith(name: 'new name');
+            },
             customDisplayHandlers: {
               CustomType: (val, refresh) {
                 final model = val as UserModel;
@@ -36,10 +56,10 @@ class _MyAppState extends State<MyApp> {
                   Center(
                     child: ElevatedButton(
                       onPressed: () {
-                        print('tapped ${model.customType!.text}');
+                        print('tapped ${model.customType?.text}');
                         refresh.call();
                       },
-                      child: Text(model.customType!.text),
+                      child: Text(model.customType?.text ?? 'A'),
                     ),
                   ),
                 );

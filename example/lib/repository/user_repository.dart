@@ -1,3 +1,4 @@
+import 'package:crud_table/model/data_exception.dart';
 import 'package:crud_table/model/data_repository.dart';
 import 'package:crud_table_example/models/user.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -11,7 +12,7 @@ class UserRepository extends DataRepository<UserModel> {
       tel: 'tel $index',
       email: 'email_$index@gmail.com',
       address: 'address $index',
-      nationality: 'nat $index',
+      nationality: index.isEven ? 'nat $index' : null,
       fcmToken: 'tok $index',
       createdAt: DateTime.now().subtract(Duration(days: index)),
       updatedAt: DateTime.now().subtract(Duration(days: index)),
@@ -23,14 +24,18 @@ class UserRepository extends DataRepository<UserModel> {
   @override
   Future<void> create(UserModel model) async {
     await Future.delayed(const Duration(seconds: 1));
-    users.add(model.copyWith(
-      updatedAt: DateTime.now(),
-    ));
+
+    throw CrudException('Failed to add User!');
+
+    // users.add(model.copyWith(
+    //   updatedAt: DateTime.now(),
+    // ));
   }
 
   @override
   Future<void> delete(UserModel model) async {
     await Future.delayed(const Duration(seconds: 1));
+
     users.removeWhere((element) => element.docId == model.docId);
   }
 

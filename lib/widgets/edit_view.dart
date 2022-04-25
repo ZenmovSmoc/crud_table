@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:crud_table/crud_table.dart';
 import 'package:crud_table/model/data_model.dart';
 import 'package:crud_table/util/edit_utils.dart';
 import 'package:date_time_picker/date_time_picker.dart';
@@ -8,14 +9,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../crud_table.dart';
-
 enum EditType { add, update }
 
 class EditView<T extends DataModel> extends StatefulWidget {
   final EditType type;
   final T data;
-  final Map<Type, CustomEditHandler>? customEditHandlers;
+  final Map<Type, CustomEditHandlers>? customEditHandlers;
 
   const EditView({
     Key? key,
@@ -106,7 +105,7 @@ class _EditViewState extends State<EditView> {
                 trailing: IconButton(
                   onPressed: () => Navigator.of(context).pop(null),
                   icon: const Icon(Icons.close),
-                  padding: const EdgeInsets.all(0),
+                  padding: EdgeInsets.zero,
                 ),
                 dense: true,
               ),
@@ -127,10 +126,11 @@ class _EditViewState extends State<EditView> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 18,
-                  )),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32,
+                      vertical: 18,
+                    ),
+                  ),
                   child: const Text(
                     'Submit',
                     style: TextStyle(
@@ -154,7 +154,7 @@ class TextFieldWidget extends StatelessWidget {
   final dynamic data;
   final TextEditingController controller;
 
-  final Map<Type, CustomEditHandler>? customEditHandlers;
+  final Map<Type, CustomEditHandlers>? customEditHandlers;
 
   const TextFieldWidget({
     Key? key,
@@ -207,86 +207,88 @@ class TextFieldWidget extends StatelessWidget {
     LatLng? _location = data;
     late GoogleMapController _controller;
 
-    return StatefulBuilder(builder: (context, setState) {
-      Future<void> onTap() async {
-        final result = await showDialog<LatLng?>(
-          context: context,
-          barrierDismissible: false,
-          barrierColor: Colors.transparent,
-          builder: (context) => MapPickerWidget(initialValue: _location),
-        );
+    return StatefulBuilder(
+      builder: (context, setState) {
+        Future<void> onTap() async {
+          final result = await showDialog<LatLng?>(
+            context: context,
+            barrierDismissible: false,
+            barrierColor: Colors.transparent,
+            builder: (context) => MapPickerWidget(initialValue: _location),
+          );
 
-        if (result != null) {
-          final data = <String, String>{
-            'latitude': '${result.latitude}',
-            'longitude': '${result.longitude}',
-          };
+          if (result != null) {
+            final data = <String, String>{
+              'latitude': '${result.latitude}',
+              'longitude': '${result.longitude}',
+            };
 
-          controller.text = json.encode(data);
-          _controller.moveCamera(CameraUpdate.newLatLng(result));
-          setState(() => _location = result);
+            controller.text = json.encode(data);
+            _controller.moveCamera(CameraUpdate.newLatLng(result));
+            setState(() => _location = result);
+          }
         }
-      }
 
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            height: 230,
-            width: 475,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(width: 0.5),
-              ),
-              child: GoogleMap(
-                onMapCreated: (controler) {
-                  _controller = controler;
-                },
-                onTap: (_) async => onTap(),
-                initialCameraPosition: CameraPosition(
-                  target: _location ??
-                      const LatLng(37.42796133580664, -122.085749655962),
-                  zoom: 12,
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: 230,
+              width: 475,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(width: 0.5),
                 ),
-                markers: {
-                  if (_location != null)
-                    Marker(
-                      markerId: MarkerId(_location.toString()),
-                      position: _location!,
-                    )
-                },
-                compassEnabled: false,
-                rotateGesturesEnabled: false,
-                gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
-                  Factory<OneSequenceGestureRecognizer>(
-                    () => ScaleGestureRecognizer(),
+                child: GoogleMap(
+                  onMapCreated: (controler) {
+                    _controller = controler;
+                  },
+                  onTap: (_) async => onTap(),
+                  initialCameraPosition: CameraPosition(
+                    target: _location ??
+                        const LatLng(37.42796133580664, -122.085749655962),
+                    zoom: 12,
                   ),
-                },
+                  markers: {
+                    if (_location != null)
+                      Marker(
+                        markerId: MarkerId(_location.toString()),
+                        position: _location!,
+                      )
+                  },
+                  compassEnabled: false,
+                  rotateGesturesEnabled: false,
+                  gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+                    Factory<OneSequenceGestureRecognizer>(
+                      () => ScaleGestureRecognizer(),
+                    ),
+                  },
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 8),
-          TextFormField(
-            controller: controller,
-            enableInteractiveSelection: false,
-            readOnly: true,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              labelText: keyType,
-              prefixIcon: const Icon(Icons.location_pin),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: controller,
+              enableInteractiveSelection: false,
+              readOnly: true,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                labelText: keyType,
+                prefixIcon: const Icon(Icons.location_pin),
+              ),
+              onTap: onTap,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
             ),
-            onTap: onTap,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
-          ),
-        ],
-      );
-    });
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -377,13 +379,12 @@ class _MapPickerWidgetState extends State<MapPickerWidget>
                     fontSize: 20.0,
                     letterSpacing: 2,
                   ),
-                  // textAlign: TextAlign.center,
                 ),
               ),
               trailing: IconButton(
                 onPressed: () => Navigator.of(context).pop(null),
                 icon: const Icon(Icons.close),
-                padding: const EdgeInsets.all(0),
+                padding: EdgeInsets.zero,
               ),
               dense: true,
             ),
@@ -414,15 +415,19 @@ class _MapPickerWidgetState extends State<MapPickerWidget>
                             Transform.translate(
                               offset:
                                   Offset(0, -10 * animationController.value),
-                              child: const Icon(Icons.location_pin,
-                                  size: 50, color: Colors.red),
+                              child: const Icon(
+                                Icons.location_pin,
+                                size: 50,
+                                color: Colors.red,
+                              ),
                             ),
                             Container(
                               width: 5,
                               height: 5,
                               decoration: BoxDecoration(
-                                  color: Colors.red,
-                                  borderRadius: BorderRadius.circular(5)),
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
                             )
                           ],
                         ),

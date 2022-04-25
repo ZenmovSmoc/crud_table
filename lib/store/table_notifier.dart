@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:crud_table/model/data_exception.dart';
 import 'package:crud_table/model/data_model.dart';
 import 'package:crud_table/model/data_repository.dart';
 import 'package:crud_table/state/table_state.dart';
@@ -14,15 +15,17 @@ class TableStateNotifier<T extends DataModel>
   TableStateNotifier({
     required this.repository,
     required this.displayParameters,
-  }) : super(TableState(
-          rowsPerPage: PaginatedDataTable.defaultRowsPerPage,
-          sortAscending: true,
-          updateData: false,
-          sortColumnIndex: 0,
-          loading: false,
-          filterBy: displayParameters.entries.first.key,
-          tableDataSource: DataSource<T>([]),
-        )) {
+  }) : super(
+          TableState(
+            rowsPerPage: PaginatedDataTable.defaultRowsPerPage,
+            sortAscending: true,
+            updateData: false,
+            sortColumnIndex: 0,
+            loading: false,
+            filterBy: displayParameters.entries.first.key,
+            tableDataSource: DataSource<T>([]),
+          ),
+        ) {
     init();
     _initStream();
   }
@@ -42,7 +45,7 @@ class TableStateNotifier<T extends DataModel>
   }
 
   Future<void> init() async {
-    value = value.copyWith(loading: true);
+    setLoading();
 
     _data = await repository.fetch();
 
@@ -57,25 +60,41 @@ class TableStateNotifier<T extends DataModel>
   }
 
   Future<void> delete(T data) async {
-    value = value.copyWith(loading: true);
-    await repository.delete(data);
-    init();
+    setLoading();
+
+    try {
+      await repository.delete(data);
+      init();
+    } catch (ex) {
+      handleException(ex);
+    }
   }
 
   Future<void> create(T data) async {
-    value = value.copyWith(loading: true);
-    await repository.create(data);
-    init();
+    setLoading();
+
+    try {
+      await repository.create(data);
+      init();
+    } catch (ex) {
+      handleException(ex);
+    }
   }
 
   Future<void> update(T data) async {
-    value = value.copyWith(loading: true);
-    await repository.update(data);
-    init();
+    setLoading();
+
+    try {
+      await repository.update(data);
+      init();
+    } catch (ex) {
+      handleException(ex);
+    }
   }
 
   void rowsPerPage(int? rowsPerPage) => value = value.copyWith(
-      rowsPerPage: rowsPerPage ?? PaginatedDataTable.defaultRowsPerPage);
+        rowsPerPage: rowsPerPage ?? PaginatedDataTable.defaultRowsPerPage,
+      );
 
   void sortColumnIndex(int sortColumnIndex) =>
       value = value.copyWith(sortColumnIndex: sortColumnIndex);
@@ -122,6 +141,13 @@ class TableStateNotifier<T extends DataModel>
         final aMap = a.toMap();
         final bMap = b.toMap();
 
+        if (aMap[key] == null) {
+          return 1;
+        }
+        if (bMap[key] == null) {
+          return -1;
+        }
+
         final Comparable aValue = aMap[key];
         final Comparable bValue = bMap[key];
 
@@ -139,6 +165,22 @@ class TableStateNotifier<T extends DataModel>
 
     sortColumnIndex(columnIndex);
     sortAscending(sortAscending: ascending);
+  }
+
+  void setLoading() {
+    value = value.copyWith(loading: true, error: null);
+  }
+
+  void handleException(Object ex) {
+    String message = 'Error. Please try again';
+
+    if (ex is CrudException) {
+      message = ex.message;
+    }
+    value = value.copyWith(
+      error: message,
+      loading: false,
+    );
   }
 
   @override
