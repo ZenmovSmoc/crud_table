@@ -26,8 +26,8 @@ class TableStateNotifier<T extends DataModel>
             tableDataSource: DataSource<T>([]),
           ),
         ) {
-    init();
     _initStream();
+    init();
   }
 
   late List<T> _data;
@@ -39,7 +39,7 @@ class TableStateNotifier<T extends DataModel>
   void _initStream() {
     _streamSubscription = repository.stream().listen(
       (data) {
-        value = value.copyWith(updateData: false);
+        value = value.copyWith(updateData: true);
       },
     );
   }
