@@ -39,7 +39,7 @@ class TableStateNotifier<T extends DataModel>
   void _initStream() {
     _streamSubscription = repository.stream().listen(
       (data) {
-        value = value.copyWith(updateData: true);
+        value = value.copyWith(updateData: false);
       },
     );
   }
