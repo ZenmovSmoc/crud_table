@@ -26,8 +26,8 @@ class TableStateNotifier<T extends DataModel>
             tableDataSource: DataSource<T>([]),
           ),
         ) {
-    init();
     _initStream();
+    init();
   }
 
   late List<T> _data;
