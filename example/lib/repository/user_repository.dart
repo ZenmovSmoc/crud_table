@@ -42,13 +42,15 @@ class UserRepository extends DataRepository<UserModel> {
   @override
   Future<List<UserModel>> fetch() async {
     await Future.delayed(const Duration(seconds: 1));
-    return users;
+    // return users;
+    return [];
   }
 
   @override
   Stream<List<UserModel>> stream() {
     return Stream.fromIterable([
-      [UserModel()]
+      // [UserModel()]
+      []
     ]);
   }
 

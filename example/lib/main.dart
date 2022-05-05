@@ -79,6 +79,9 @@ class _MyAppState extends State<MyApp> {
                 return Container();
               }
             },
+            empty: Center(
+              child: Text('Empty table'),
+            ),
           ),
         ),
       ),

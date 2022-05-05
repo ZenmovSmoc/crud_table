@@ -35,6 +35,7 @@ class CRUDTable<T extends DataModel> extends StatefulWidget {
   final Map<Type, CustomEditHandlers>? customEditHandlers;
   final CustomAddHandler<T>? customAddHandler;
   final CustomEditHandler<DataModel>? customEditHandler;
+  final Widget? empty;
 
   const CRUDTable({
     Key? key,
@@ -52,6 +53,7 @@ class CRUDTable<T extends DataModel> extends StatefulWidget {
     this.onRowTap,
     this.customAddHandler,
     this.customEditHandler,
+    this.empty = const _EmptyWidget(),
   }) : super(key: key);
 
   @override
@@ -148,6 +150,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
                 minWidth: widget.minWidth,
                 dataRowHeight: widget.dataRowHeight,
                 showCheckboxColumn: false,
+                empty: widget.empty,
               ),
             ),
             if (state.updateData)
@@ -292,5 +295,14 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
     columns.insert(0, const DataColumn2(label: Text(''), size: ColumnSize.S));
 
     return columns;
+  }
+}
+
+class _EmptyWidget extends StatelessWidget {
+  const _EmptyWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('No records'));
   }
 }
