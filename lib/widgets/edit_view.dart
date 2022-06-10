@@ -51,7 +51,8 @@ class _EditViewState extends State<EditView> {
     _parameters.forEach(
       (key, type) {
         final _controller = TextEditingController(
-            text: initTextEditingValue(type, dataMap[key]));
+          text: initTextEditingValue(type, dataMap[key]),
+        );
         _formControllers[key] = _controller;
 
         widgets.add(
@@ -328,7 +329,9 @@ class _MapPickerWidgetState extends State<MapPickerWidget>
     super.initState();
 
     animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 200));
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
 
     _initialLocation = widget.initialValue ??
         const LatLng(37.42796133580664, -122.085749655962);

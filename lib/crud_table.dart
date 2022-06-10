@@ -120,7 +120,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
           };
 
           if (state.error != null) {
-            WidgetsBinding.instance?.addPostFrameCallback((_) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
               ScaffoldMessenger.of(context).removeCurrentSnackBar();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
