@@ -159,7 +159,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
                 child: Center(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.deepOrangeAccent,
+                      backgroundColor: Colors.deepOrangeAccent,
                       minimumSize: const Size(88, 36),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 24,
@@ -170,9 +170,9 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
                       ),
                     ),
                     onPressed: () => _notifier.init(),
-                    child: Row(
+                    child: const Row(
                       mainAxisSize: MainAxisSize.min,
-                      children: const [
+                      children: [
                         Text(
                           'New data available',
                           style: TextStyle(color: Colors.white),
