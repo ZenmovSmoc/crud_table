@@ -12,9 +12,11 @@ class DataSource<T extends DataModel> extends DataTableSource {
   final DateTime? lastUpdateTime;
   late bool _isEditable;
   late bool _isDeletable;
+  late bool _isQRDisplayable;
 
   late Function(T) _editHandler;
   late Function(T) _deleteHandler;
+  late Function(T) _qrHandler;
   late VoidCallback _refreshHandler;
   Function(T)? _onRowTap;
 
@@ -28,6 +30,10 @@ class DataSource<T extends DataModel> extends DataTableSource {
     _deleteHandler = handler;
   }
 
+  set qrHandler(Function(T) handler) {
+    _qrHandler = handler;
+  }
+
   set refreshHandler(VoidCallback handler) {
     _refreshHandler = handler;
   }
@@ -38,6 +44,10 @@ class DataSource<T extends DataModel> extends DataTableSource {
 
   set isDeletable(bool deletable) {
     _isDeletable = deletable;
+  }
+
+  set isQRDisplayable(bool qrDisplayable) {
+    _isQRDisplayable = qrDisplayable;
   }
 
   set customHandlers(Map<Type, CustomHandler>? customHandlers) {
@@ -103,12 +113,21 @@ class DataSource<T extends DataModel> extends DataTableSource {
       },
     );
 
-    if (_isEditable || _isDeletable) {
+    if (_isEditable || _isDeletable || _isQRDisplayable) {
       cells.add(
         DataCell(
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              if (_isQRDisplayable)
+                Flexible(
+                  child: IconButton(
+                    icon: const Icon(Icons.qr_code, color: Colors.black),
+                    onPressed: () {
+                      _qrHandler(item);
+                    },
+                  ),
+                ),
               if (_isEditable)
                 Flexible(
                   child: IconButton(
@@ -126,7 +145,7 @@ class DataSource<T extends DataModel> extends DataTableSource {
                       _deleteHandler(item);
                     },
                   ),
-                )
+                ),
             ],
           ),
         ),

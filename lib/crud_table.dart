@@ -6,6 +6,7 @@ import 'package:crud_table/state/table_state.dart';
 import 'package:crud_table/store/table_notifier.dart';
 import 'package:crud_table/util/confirmation_dialog.dart';
 import 'package:crud_table/widgets/edit_view.dart';
+import 'package:crud_table/widgets/qr_view.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +25,7 @@ class CRUDTable<T extends DataModel> extends StatefulWidget {
   final String headerTitle;
   final bool isEditable;
   final bool isDeletable;
+  final bool isQRDisplayable;
   final bool canAddEntry;
   final DataRepository repository;
   final ItemCreator<T> instance;
@@ -45,6 +47,7 @@ class CRUDTable<T extends DataModel> extends StatefulWidget {
     this.isEditable = true,
     this.canAddEntry = true,
     this.isDeletable = true,
+    this.isQRDisplayable = false,
     this.padding = const EdgeInsets.all(12),
     this.dataRowHeight = kMinInteractiveDimension,
     this.customDisplayHandlers,
@@ -86,8 +89,17 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
         if (state.tableDataSource != null) {
           state.tableDataSource!.isEditable = widget.isEditable;
           state.tableDataSource!.isDeletable = widget.isDeletable;
+          state.tableDataSource!.isQRDisplayable = widget.isQRDisplayable;
           state.tableDataSource!.customHandlers = widget.customDisplayHandlers;
           state.tableDataSource!.rowTapHandler = widget.onRowTap;
+          state.tableDataSource!.qrHandler = (model) async {
+            await showDialog(
+              context: context,
+              builder: (context) => QRView(
+                data: model,
+              ),
+            );
+          };
           state.tableDataSource!.editHandler = (model) async {
             DataModel? result;
 
@@ -159,7 +171,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
                 child: Center(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.deepOrangeAccent,
+                      backgroundColor: Colors.deepOrangeAccent,
                       minimumSize: const Size(88, 36),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 24,
@@ -170,15 +182,15 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
                       ),
                     ),
                     onPressed: () => _notifier.init(),
-                    child: Row(
+                    child: const Row(
                       mainAxisSize: MainAxisSize.min,
-                      children: const [
+                      children: [
                         Text(
                           'New data available',
                           style: TextStyle(color: Colors.white),
                         ),
                         SizedBox(width: 4),
-                        Icon(Icons.refresh, color: Colors.white)
+                        Icon(Icons.refresh, color: Colors.white),
                       ],
                     ),
                   ),
@@ -191,7 +203,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
                 child: const Center(
                   child: CircularProgressIndicator(),
                 ),
-              )
+              ),
           ],
         );
       },
@@ -258,7 +270,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
               _notifier.create(result);
             }
           },
-        )
+        ),
     ];
   }
 
@@ -273,7 +285,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
 
         columns.add(
           DataColumn2(
-            label: Text(element.toString()),
+            label: Text(element),
             onSort: isCustomType
                 ? null
                 : (columnIndex, ascending) => _notifier.sort(
