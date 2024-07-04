@@ -1,6 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'user.dart';
 
@@ -11,42 +12,7 @@ part of 'user.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
-
-/// @nodoc
-class _$UserModelTearOff {
-  const _$UserModelTearOff();
-
-  _UserModel call(
-      {String? docId,
-      String? name,
-      String? tel,
-      String? email,
-      String? address,
-      String? nationality,
-      String? fcmToken,
-      LatLng? location,
-      DateTime? createdAt,
-      DateTime? updatedAt,
-      CustomType? customType}) {
-    return _UserModel(
-      docId: docId,
-      name: name,
-      tel: tel,
-      email: email,
-      address: address,
-      nationality: nationality,
-      fcmToken: fcmToken,
-      location: location,
-      createdAt: createdAt,
-      updatedAt: updatedAt,
-      customType: customType,
-    );
-  }
-}
-
-/// @nodoc
-const $UserModel = _$UserModelTearOff();
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$UserModel {
@@ -70,7 +36,8 @@ mixin _$UserModel {
 /// @nodoc
 abstract class $UserModelCopyWith<$Res> {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) then) =
-      _$UserModelCopyWithImpl<$Res>;
+      _$UserModelCopyWithImpl<$Res, UserModel>;
+  @useResult
   $Res call(
       {String? docId,
       String? name,
@@ -86,13 +53,16 @@ abstract class $UserModelCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
+class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
+    implements $UserModelCopyWith<$Res> {
   _$UserModelCopyWithImpl(this._value, this._then);
 
-  final UserModel _value;
   // ignore: unused_field
-  final $Res Function(UserModel) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? docId = freezed,
@@ -108,60 +78,62 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
     Object? customType = freezed,
   }) {
     return _then(_value.copyWith(
-      docId: docId == freezed
+      docId: freezed == docId
           ? _value.docId
           : docId // ignore: cast_nullable_to_non_nullable
               as String?,
-      name: name == freezed
+      name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String?,
-      tel: tel == freezed
+      tel: freezed == tel
           ? _value.tel
           : tel // ignore: cast_nullable_to_non_nullable
               as String?,
-      email: email == freezed
+      email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String?,
-      address: address == freezed
+      address: freezed == address
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
               as String?,
-      nationality: nationality == freezed
+      nationality: freezed == nationality
           ? _value.nationality
           : nationality // ignore: cast_nullable_to_non_nullable
               as String?,
-      fcmToken: fcmToken == freezed
+      fcmToken: freezed == fcmToken
           ? _value.fcmToken
           : fcmToken // ignore: cast_nullable_to_non_nullable
               as String?,
-      location: location == freezed
+      location: freezed == location
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
               as LatLng?,
-      createdAt: createdAt == freezed
+      createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      updatedAt: updatedAt == freezed
+      updatedAt: freezed == updatedAt
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      customType: customType == freezed
+      customType: freezed == customType
           ? _value.customType
           : customType // ignore: cast_nullable_to_non_nullable
               as CustomType?,
-    ));
+    ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Res> {
-  factory _$UserModelCopyWith(
-          _UserModel value, $Res Function(_UserModel) then) =
-      __$UserModelCopyWithImpl<$Res>;
+abstract class _$$UserModelImplCopyWith<$Res>
+    implements $UserModelCopyWith<$Res> {
+  factory _$$UserModelImplCopyWith(
+          _$UserModelImpl value, $Res Function(_$UserModelImpl) then) =
+      __$$UserModelImplCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call(
       {String? docId,
       String? name,
@@ -177,14 +149,14 @@ abstract class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$UserModelCopyWithImpl<$Res> extends _$UserModelCopyWithImpl<$Res>
-    implements _$UserModelCopyWith<$Res> {
-  __$UserModelCopyWithImpl(_UserModel _value, $Res Function(_UserModel) _then)
-      : super(_value, (v) => _then(v as _UserModel));
+class __$$UserModelImplCopyWithImpl<$Res>
+    extends _$UserModelCopyWithImpl<$Res, _$UserModelImpl>
+    implements _$$UserModelImplCopyWith<$Res> {
+  __$$UserModelImplCopyWithImpl(
+      _$UserModelImpl _value, $Res Function(_$UserModelImpl) _then)
+      : super(_value, _then);
 
-  @override
-  _UserModel get _value => super._value as _UserModel;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? docId = freezed,
@@ -199,48 +171,48 @@ class __$UserModelCopyWithImpl<$Res> extends _$UserModelCopyWithImpl<$Res>
     Object? updatedAt = freezed,
     Object? customType = freezed,
   }) {
-    return _then(_UserModel(
-      docId: docId == freezed
+    return _then(_$UserModelImpl(
+      docId: freezed == docId
           ? _value.docId
           : docId // ignore: cast_nullable_to_non_nullable
               as String?,
-      name: name == freezed
+      name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String?,
-      tel: tel == freezed
+      tel: freezed == tel
           ? _value.tel
           : tel // ignore: cast_nullable_to_non_nullable
               as String?,
-      email: email == freezed
+      email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String?,
-      address: address == freezed
+      address: freezed == address
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
               as String?,
-      nationality: nationality == freezed
+      nationality: freezed == nationality
           ? _value.nationality
           : nationality // ignore: cast_nullable_to_non_nullable
               as String?,
-      fcmToken: fcmToken == freezed
+      fcmToken: freezed == fcmToken
           ? _value.fcmToken
           : fcmToken // ignore: cast_nullable_to_non_nullable
               as String?,
-      location: location == freezed
+      location: freezed == location
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
               as LatLng?,
-      createdAt: createdAt == freezed
+      createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      updatedAt: updatedAt == freezed
+      updatedAt: freezed == updatedAt
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      customType: customType == freezed
+      customType: freezed == customType
           ? _value.customType
           : customType // ignore: cast_nullable_to_non_nullable
               as CustomType?,
@@ -250,8 +222,8 @@ class __$UserModelCopyWithImpl<$Res> extends _$UserModelCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_UserModel extends _UserModel with DiagnosticableTreeMixin {
-  const _$_UserModel(
+class _$UserModelImpl extends _UserModel with DiagnosticableTreeMixin {
+  const _$UserModelImpl(
       {this.docId,
       this.name,
       this.tel,
@@ -312,59 +284,53 @@ class _$_UserModel extends _UserModel with DiagnosticableTreeMixin {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _UserModel &&
-            const DeepCollectionEquality().equals(other.docId, docId) &&
-            const DeepCollectionEquality().equals(other.name, name) &&
-            const DeepCollectionEquality().equals(other.tel, tel) &&
-            const DeepCollectionEquality().equals(other.email, email) &&
-            const DeepCollectionEquality().equals(other.address, address) &&
-            const DeepCollectionEquality()
-                .equals(other.nationality, nationality) &&
-            const DeepCollectionEquality().equals(other.fcmToken, fcmToken) &&
-            const DeepCollectionEquality().equals(other.location, location) &&
-            const DeepCollectionEquality().equals(other.createdAt, createdAt) &&
-            const DeepCollectionEquality().equals(other.updatedAt, updatedAt) &&
-            const DeepCollectionEquality()
-                .equals(other.customType, customType));
+            other is _$UserModelImpl &&
+            (identical(other.docId, docId) || other.docId == docId) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.tel, tel) || other.tel == tel) &&
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.address, address) || other.address == address) &&
+            (identical(other.nationality, nationality) ||
+                other.nationality == nationality) &&
+            (identical(other.fcmToken, fcmToken) ||
+                other.fcmToken == fcmToken) &&
+            (identical(other.location, location) ||
+                other.location == location) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt) &&
+            (identical(other.customType, customType) ||
+                other.customType == customType));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(docId),
-      const DeepCollectionEquality().hash(name),
-      const DeepCollectionEquality().hash(tel),
-      const DeepCollectionEquality().hash(email),
-      const DeepCollectionEquality().hash(address),
-      const DeepCollectionEquality().hash(nationality),
-      const DeepCollectionEquality().hash(fcmToken),
-      const DeepCollectionEquality().hash(location),
-      const DeepCollectionEquality().hash(createdAt),
-      const DeepCollectionEquality().hash(updatedAt),
-      const DeepCollectionEquality().hash(customType));
+  int get hashCode => Object.hash(runtimeType, docId, name, tel, email, address,
+      nationality, fcmToken, location, createdAt, updatedAt, customType);
 
   @JsonKey(ignore: true)
   @override
-  _$UserModelCopyWith<_UserModel> get copyWith =>
-      __$UserModelCopyWithImpl<_UserModel>(this, _$identity);
+  @pragma('vm:prefer-inline')
+  _$$UserModelImplCopyWith<_$UserModelImpl> get copyWith =>
+      __$$UserModelImplCopyWithImpl<_$UserModelImpl>(this, _$identity);
 }
 
 abstract class _UserModel extends UserModel {
   const factory _UserModel(
-      {String? docId,
-      String? name,
-      String? tel,
-      String? email,
-      String? address,
-      String? nationality,
-      String? fcmToken,
-      LatLng? location,
-      DateTime? createdAt,
-      DateTime? updatedAt,
-      CustomType? customType}) = _$_UserModel;
+      {final String? docId,
+      final String? name,
+      final String? tel,
+      final String? email,
+      final String? address,
+      final String? nationality,
+      final String? fcmToken,
+      final LatLng? location,
+      final DateTime? createdAt,
+      final DateTime? updatedAt,
+      final CustomType? customType}) = _$UserModelImpl;
   const _UserModel._() : super._();
 
   @override
@@ -391,6 +357,6 @@ abstract class _UserModel extends UserModel {
   CustomType? get customType;
   @override
   @JsonKey(ignore: true)
-  _$UserModelCopyWith<_UserModel> get copyWith =>
+  _$$UserModelImplCopyWith<_$UserModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
