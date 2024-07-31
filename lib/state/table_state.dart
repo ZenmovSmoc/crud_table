@@ -15,6 +15,7 @@ class TableState<T extends DataModel> with _$TableState<T> {
     required bool loading,
     String? filterBy,
     String? filterText,
+    bool? filterCheckbox,
     DataSource? tableDataSource,
     String? error,
   }) = _TableState;

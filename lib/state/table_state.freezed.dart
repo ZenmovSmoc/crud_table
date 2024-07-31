@@ -23,6 +23,7 @@ mixin _$TableState<T extends DataModel> {
   bool get loading => throw _privateConstructorUsedError;
   String? get filterBy => throw _privateConstructorUsedError;
   String? get filterText => throw _privateConstructorUsedError;
+  bool? get filterCheckbox => throw _privateConstructorUsedError;
   DataSource<DataModel>? get tableDataSource =>
       throw _privateConstructorUsedError;
   String? get error => throw _privateConstructorUsedError;
@@ -46,6 +47,7 @@ abstract class $TableStateCopyWith<T extends DataModel, $Res> {
       bool loading,
       String? filterBy,
       String? filterText,
+      bool? filterCheckbox,
       DataSource<DataModel>? tableDataSource,
       String? error});
 }
@@ -70,6 +72,7 @@ class _$TableStateCopyWithImpl<T extends DataModel, $Res,
     Object? loading = null,
     Object? filterBy = freezed,
     Object? filterText = freezed,
+    Object? filterCheckbox = freezed,
     Object? tableDataSource = freezed,
     Object? error = freezed,
   }) {
@@ -102,6 +105,10 @@ class _$TableStateCopyWithImpl<T extends DataModel, $Res,
           ? _value.filterText
           : filterText // ignore: cast_nullable_to_non_nullable
               as String?,
+      filterCheckbox: freezed == filterCheckbox
+          ? _value.filterCheckbox
+          : filterCheckbox // ignore: cast_nullable_to_non_nullable
+              as bool?,
       tableDataSource: freezed == tableDataSource
           ? _value.tableDataSource
           : tableDataSource // ignore: cast_nullable_to_non_nullable
@@ -130,6 +137,7 @@ abstract class _$$TableStateImplCopyWith<T extends DataModel, $Res>
       bool loading,
       String? filterBy,
       String? filterText,
+      bool? filterCheckbox,
       DataSource<DataModel>? tableDataSource,
       String? error});
 }
@@ -152,6 +160,7 @@ class __$$TableStateImplCopyWithImpl<T extends DataModel, $Res>
     Object? loading = null,
     Object? filterBy = freezed,
     Object? filterText = freezed,
+    Object? filterCheckbox = freezed,
     Object? tableDataSource = freezed,
     Object? error = freezed,
   }) {
@@ -184,6 +193,10 @@ class __$$TableStateImplCopyWithImpl<T extends DataModel, $Res>
           ? _value.filterText
           : filterText // ignore: cast_nullable_to_non_nullable
               as String?,
+      filterCheckbox: freezed == filterCheckbox
+          ? _value.filterCheckbox
+          : filterCheckbox // ignore: cast_nullable_to_non_nullable
+              as bool?,
       tableDataSource: freezed == tableDataSource
           ? _value.tableDataSource
           : tableDataSource // ignore: cast_nullable_to_non_nullable
@@ -209,6 +222,7 @@ class _$TableStateImpl<T extends DataModel>
       required this.loading,
       this.filterBy,
       this.filterText,
+      this.filterCheckbox,
       this.tableDataSource,
       this.error});
 
@@ -227,13 +241,15 @@ class _$TableStateImpl<T extends DataModel>
   @override
   final String? filterText;
   @override
+  final bool? filterCheckbox;
+  @override
   final DataSource<DataModel>? tableDataSource;
   @override
   final String? error;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'TableState<$T>(rowsPerPage: $rowsPerPage, sortColumnIndex: $sortColumnIndex, sortAscending: $sortAscending, updateData: $updateData, loading: $loading, filterBy: $filterBy, filterText: $filterText, tableDataSource: $tableDataSource, error: $error)';
+    return 'TableState<$T>(rowsPerPage: $rowsPerPage, sortColumnIndex: $sortColumnIndex, sortAscending: $sortAscending, updateData: $updateData, loading: $loading, filterBy: $filterBy, filterText: $filterText, filterCheckbox: $filterCheckbox, tableDataSource: $tableDataSource, error: $error)';
   }
 
   @override
@@ -248,6 +264,7 @@ class _$TableStateImpl<T extends DataModel>
       ..add(DiagnosticsProperty('loading', loading))
       ..add(DiagnosticsProperty('filterBy', filterBy))
       ..add(DiagnosticsProperty('filterText', filterText))
+      ..add(DiagnosticsProperty('filterCheckbox', filterCheckbox))
       ..add(DiagnosticsProperty('tableDataSource', tableDataSource))
       ..add(DiagnosticsProperty('error', error));
   }
@@ -270,6 +287,8 @@ class _$TableStateImpl<T extends DataModel>
                 other.filterBy == filterBy) &&
             (identical(other.filterText, filterText) ||
                 other.filterText == filterText) &&
+            (identical(other.filterCheckbox, filterCheckbox) ||
+                other.filterCheckbox == filterCheckbox) &&
             (identical(other.tableDataSource, tableDataSource) ||
                 other.tableDataSource == tableDataSource) &&
             (identical(other.error, error) || other.error == error));
@@ -285,6 +304,7 @@ class _$TableStateImpl<T extends DataModel>
       loading,
       filterBy,
       filterText,
+      filterCheckbox,
       tableDataSource,
       error);
 
@@ -304,6 +324,7 @@ abstract class _TableState<T extends DataModel> implements TableState<T> {
       required final bool loading,
       final String? filterBy,
       final String? filterText,
+      final bool? filterCheckbox,
       final DataSource<DataModel>? tableDataSource,
       final String? error}) = _$TableStateImpl<T>;
 
@@ -321,6 +342,8 @@ abstract class _TableState<T extends DataModel> implements TableState<T> {
   String? get filterBy;
   @override
   String? get filterText;
+  @override
+  bool? get filterCheckbox;
   @override
   DataSource<DataModel>? get tableDataSource;
   @override

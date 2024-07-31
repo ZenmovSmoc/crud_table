@@ -48,6 +48,9 @@ class TableStateNotifier<T extends DataModel>
     setLoading();
 
     _data = await repository.fetch();
+    if (value.filterCheckbox != null) {
+      _data = repository.filter(value: value.filterCheckbox!);
+    }
 
     value = value.copyWith(
       tableDataSource: DataSource<T>(_data, lastUpdateTime: _lastUpdateTime),
@@ -180,6 +183,12 @@ class TableStateNotifier<T extends DataModel>
     value = value.copyWith(
       error: message,
       loading: false,
+    );
+  }
+
+  void setFilterCheckbox({bool? filterValue}) {
+    value = value.copyWith(
+      filterCheckbox: filterValue,
     );
   }
 
