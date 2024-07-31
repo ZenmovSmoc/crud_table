@@ -1,6 +1,6 @@
 import 'package:crud_table/model/data_model.dart';
 
-abstract class DataRepository<T extends DataModel> {
+abstract class DataRepository<T extends DataModel> with Filterable<T> {
   Future<List<T>> fetch();
 
   Future<void> create(T model);
@@ -10,4 +10,10 @@ abstract class DataRepository<T extends DataModel> {
   Stream<List<T>> stream();
 
   Future<void> delete(T model);
+}
+
+mixin Filterable<T> {
+  List<T> filter({required bool value}) {
+    return [];
+  }
 }
