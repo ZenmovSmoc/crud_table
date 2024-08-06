@@ -1,4 +1,5 @@
 import 'package:crud_table/model/data_model.dart';
+import 'package:crud_table/util/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -42,7 +43,7 @@ class _QRViewState extends State<QRView> {
     );
 
     qrImage = QrImageView(
-      data: dataMap["Promo Code"],
+      data: dataMap[Strings.promoCode],
       size: 200.0,
     );
   }

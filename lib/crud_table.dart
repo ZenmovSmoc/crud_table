@@ -112,6 +112,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
                 builder: (context) => EditView(
                   type: EditType.update,
                   data: model,
+                  dataTable: state.tableDataSource!.data,
                   customEditHandlers: widget.customEditHandlers,
                 ),
               );
@@ -150,7 +151,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
               child: PaginatedDataTable2(
                 header: Text(widget.headerTitle),
                 columns: buildDataColumns(),
-                actions: buildActions(filterBy: state.filterBy),
+                actions: buildActions(filterBy: state.filterBy, dataTable: state.tableDataSource!.data),
                 rowsPerPage: state.rowsPerPage,
                 onRowsPerPageChanged: _notifier.rowsPerPage,
                 sortColumnIndex: state.sortColumnIndex,
@@ -210,7 +211,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
     );
   }
 
-  List<Widget> buildActions({String? filterBy}) {
+  List<Widget> buildActions({String? filterBy, List<DataModel>? dataTable}) {
     final params = widget.instance.call().getDisplayParamsList();
     final customHandlers = widget.customDisplayHandlers?.keys.toList() ?? [];
 
@@ -261,6 +262,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
                 builder: (context) => EditView(
                   type: EditType.add,
                   data: widget.instance.call(),
+                  dataTable: dataTable!,
                   customEditHandlers: widget.customEditHandlers,
                 ),
               );
