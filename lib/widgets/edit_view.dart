@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:crud_table/crud_table.dart';
 import 'package:crud_table/model/data_model.dart';
 import 'package:crud_table/util/edit_utils.dart';
+import 'package:crud_table/util/strings.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -14,12 +15,14 @@ enum EditType { add, update }
 class EditView<T extends DataModel> extends StatefulWidget {
   final EditType type;
   final T data;
+  final List<T> dataTable;
   final Map<Type, CustomEditHandlers>? customEditHandlers;
 
   const EditView({
     Key? key,
     required this.type,
     required this.data,
+    required this.dataTable,
     this.customEditHandlers,
   }) : super(key: key);
 
@@ -35,6 +38,8 @@ class _EditViewState extends State<EditView> {
   late Map<String, Type> _parameters;
 
   final List<Widget> widgets = [];
+
+  bool isPromoCodeExist = false;
 
   @override
   void initState() {
@@ -113,17 +118,30 @@ class _EditViewState extends State<EditView> {
               const SizedBox(height: 32),
               ...widgets,
               const SizedBox(height: 32),
+              if (isPromoCodeExist) Center(child: Text("That promotional code already exists!", style: TextStyle(color: Colors.red),)),
+              const SizedBox(height: 32),
               Center(
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      DataModel _data = widget.data;
+                      if (_formControllers.containsKey(Strings.promoCode) && widget.dataTable
+                                .where((element) =>
+                                    element.toMap()[Strings.promoCode] ==
+                                    _formControllers[Strings.promoCode]!.value.text)
+                                .length ==
+                            1) {
+                    setState(() {
+                            isPromoCodeExist = true;
+                          });
+                      } else {
+                        DataModel _data = widget.data;
 
-                      _formControllers.forEach((key, value) {
-                        _data = _data.setParameter(key, value.text);
-                      });
+                        _formControllers.forEach((key, value) {
+                          _data = _data.setParameter(key, value.text);
+                        });
 
-                      Navigator.of(context).pop(_data);
+                        Navigator.of(context).pop(_data);
+                      }
                     }
                   },
                   style: ElevatedButton.styleFrom(
