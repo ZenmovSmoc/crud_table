@@ -55,10 +55,16 @@ class _EditViewState extends State<EditView> {
 
     _parameters.forEach(
       (key, type) {
-        final _controller = TextEditingController(
+        final controller = TextEditingController(
           text: initTextEditingValue(type, dataMap[key]),
         );
-        _formControllers[key] = _controller;
+        _formControllers[key] = controller;
+
+        bool enabled = true;
+
+        if (widget.type == EditType.update && key == Strings.promoCode) {
+          enabled = false;
+        }
 
         widgets.add(
           Padding(
@@ -66,9 +72,10 @@ class _EditViewState extends State<EditView> {
             child: TextFieldWidget(
               keyType: key,
               type: type,
-              controller: _controller,
+              textEditingController: controller,
               data: dataMap[key],
               customEditHandlers: widget.customEditHandlers,
+              enabled: enabled,
             ),
           ),
         );
@@ -109,7 +116,7 @@ class _EditViewState extends State<EditView> {
                   ),
                 ),
                 trailing: IconButton(
-                  onPressed: () => Navigator.of(context).pop(null),
+                  onPressed: () => Navigator.of(context).pop(),
                   icon: const Icon(Icons.close),
                   padding: EdgeInsets.zero,
                 ),
@@ -118,29 +125,41 @@ class _EditViewState extends State<EditView> {
               const SizedBox(height: 32),
               ...widgets,
               const SizedBox(height: 32),
-              if (isPromoCodeExist) Center(child: Text("That promotional code already exists!", style: TextStyle(color: Colors.red),)),
+              if (isPromoCodeExist)
+                const Center(
+                  child: Text(
+                    "That promotional code already exists!",
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
               const SizedBox(height: 32),
               Center(
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      if (_formControllers.containsKey(Strings.promoCode) && widget.dataTable
-                                .where((element) =>
-                                    element.toMap()[Strings.promoCode] ==
-                                    _formControllers[Strings.promoCode]!.value.text)
-                                .length ==
-                            1) {
-                    setState(() {
-                            isPromoCodeExist = true;
-                          });
+                      if (widget.type == EditType.add &&
+                          _formControllers.containsKey(Strings.promoCode) &&
+                          widget.dataTable
+                                  .where(
+                                    (element) =>
+                                        element.toMap()[Strings.promoCode] ==
+                                        _formControllers[Strings.promoCode]!
+                                            .value
+                                            .text,
+                                  )
+                                  .length ==
+                              1) {
+                        setState(() {
+                          isPromoCodeExist = true;
+                        });
                       } else {
-                        DataModel _data = widget.data;
+                        DataModel data = widget.data;
 
                         _formControllers.forEach((key, value) {
-                          _data = _data.setParameter(key, value.text);
+                          data = data.setParameter(key, value.text);
                         });
 
-                        Navigator.of(context).pop(_data);
+                        Navigator.of(context).pop(data);
                       }
                     }
                   },
@@ -171,22 +190,25 @@ class TextFieldWidget extends StatelessWidget {
   final String keyType;
   final Type type;
   final dynamic data;
-  final TextEditingController controller;
+  final TextEditingController textEditingController;
 
   final Map<Type, CustomEditHandlers>? customEditHandlers;
+  final bool? enabled;
 
   const TextFieldWidget({
     Key? key,
     required this.keyType,
     required this.type,
     this.data,
-    required this.controller,
+    required this.textEditingController,
     this.customEditHandlers,
+    this.enabled,
   }) : super(key: key);
 
   Widget textField() {
     return TextFormField(
-      controller: controller,
+      enabled: enabled ?? true,
+      controller: textEditingController,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       keyboardType: type == num ? TextInputType.number : TextInputType.text,
       decoration: InputDecoration(
@@ -205,7 +227,7 @@ class TextFieldWidget extends StatelessWidget {
   Widget dateTimeTextField() {
     return DateTimePicker(
       type: DateTimePickerType.dateTime,
-      controller: controller,
+      controller: textEditingController,
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         labelText: keyType,
@@ -223,8 +245,8 @@ class TextFieldWidget extends StatelessWidget {
   }
 
   Widget mapTextField(BuildContext context) {
-    LatLng? _location = data;
-    late GoogleMapController _controller;
+    LatLng? location = data;
+    late GoogleMapController controller;
 
     return StatefulBuilder(
       builder: (context, setState) {
@@ -233,7 +255,7 @@ class TextFieldWidget extends StatelessWidget {
             context: context,
             barrierDismissible: false,
             barrierColor: Colors.transparent,
-            builder: (context) => MapPickerWidget(initialValue: _location),
+            builder: (context) => MapPickerWidget(initialValue: location),
           );
 
           if (result != null) {
@@ -242,9 +264,9 @@ class TextFieldWidget extends StatelessWidget {
               'longitude': '${result.longitude}',
             };
 
-            controller.text = json.encode(data);
-            _controller.moveCamera(CameraUpdate.newLatLng(result));
-            setState(() => _location = result);
+            textEditingController.text = json.encode(data);
+            controller.moveCamera(CameraUpdate.newLatLng(result));
+            setState(() => location = result);
           }
         }
 
@@ -254,26 +276,26 @@ class TextFieldWidget extends StatelessWidget {
             SizedBox(
               height: 230,
               width: 475,
-              child: Container(
+              child: DecoratedBox(
                 decoration: BoxDecoration(
                   border: Border.all(width: 0.5),
                 ),
                 child: GoogleMap(
                   onMapCreated: (controler) {
-                    _controller = controler;
+                    controller = controler;
                   },
                   onTap: (_) async => onTap(),
                   initialCameraPosition: CameraPosition(
-                    target: _location ??
+                    target: location ??
                         const LatLng(37.42796133580664, -122.085749655962),
                     zoom: 12,
                   ),
                   markers: {
-                    if (_location != null)
+                    if (location != null)
                       Marker(
-                        markerId: MarkerId(_location.toString()),
-                        position: _location!,
-                      )
+                        markerId: MarkerId(location.toString()),
+                        position: location!,
+                      ),
                   },
                   compassEnabled: false,
                   rotateGesturesEnabled: false,
@@ -287,7 +309,7 @@ class TextFieldWidget extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             TextFormField(
-              controller: controller,
+              controller: textEditingController,
               enableInteractiveSelection: false,
               readOnly: true,
               autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -313,7 +335,7 @@ class TextFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (customEditHandlers != null && customEditHandlers!.containsKey(type)) {
-      return customEditHandlers![type]!.call(data, controller);
+      return customEditHandlers![type]!.call(data, textEditingController);
     }
 
     switch (type) {
@@ -403,7 +425,7 @@ class _MapPickerWidgetState extends State<MapPickerWidget>
                 ),
               ),
               trailing: IconButton(
-                onPressed: () => Navigator.of(context).pop(null),
+                onPressed: () => Navigator.of(context).pop(),
                 icon: const Icon(Icons.close),
                 padding: EdgeInsets.zero,
               ),
@@ -449,7 +471,7 @@ class _MapPickerWidgetState extends State<MapPickerWidget>
                                 color: Colors.red,
                                 borderRadius: BorderRadius.circular(5),
                               ),
-                            )
+                            ),
                           ],
                         ),
                       );
@@ -478,7 +500,7 @@ class _MapPickerWidgetState extends State<MapPickerWidget>
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
