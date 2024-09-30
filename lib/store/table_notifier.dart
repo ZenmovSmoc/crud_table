@@ -36,6 +36,8 @@ class TableStateNotifier<T extends DataModel>
 
   late StreamSubscription<List<T>> _streamSubscription;
 
+  final TextEditingController filterTextController = TextEditingController();
+
   void _initStream() {
     _streamSubscription = repository.stream().listen(
       (data) {
@@ -44,18 +46,31 @@ class TableStateNotifier<T extends DataModel>
     );
   }
 
-  Future<void> init() async {
+  Future<void> init({bool isAdd = false}) async {
     setLoading();
 
-    _data = await repository.fetch();
+    // created data that is sorting by created_at with desc
+    if (isAdd) {
+      value = value.copyWith(
+        isNewRecord: true,
+        filterText: null,
+      );
+      filterTextController.text = "";
+      _data =
+          await repository.fetchWithSortCondition(sortCondition: "created_at");
+    } else {
+      _data = await repository.fetch();
+    }
 
     value = value.copyWith(
       tableDataSource: DataSource<T>(_data, lastUpdateTime: _lastUpdateTime),
       loading: false,
       updateData: false,
+      isNewRecord: false,
     );
-
-    filter(value.filterText);
+    if (!isAdd) {
+      filter(value.filterText);
+    }
     _lastUpdateTime = DateTime.now();
   }
 
@@ -75,7 +90,8 @@ class TableStateNotifier<T extends DataModel>
 
     try {
       await repository.create(data);
-      init();
+      // refresh data
+      init(isAdd: true);
     } catch (ex) {
       handleException(ex);
     }

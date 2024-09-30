@@ -22,23 +22,60 @@ typedef CustomAddHandler<T> = Future<T?> Function();
 typedef CustomEditHandler<T> = Future<T?> Function(T);
 
 class CRUDTable<T extends DataModel> extends StatefulWidget {
-  final String headerTitle;
-  final bool isEditable;
-  final bool isDeletable;
-  final bool isQRDisplayable;
-  final bool canAddEntry;
-  final DataRepository repository;
-  final ItemCreator<T> instance;
-  final EdgeInsetsGeometry padding;
-  final double? minWidth;
-  final double dataRowHeight;
-  final void Function(DataModel)? onRowTap;
-  final Map<Type, CustomHandler>? customDisplayHandlers;
-  final Map<Type, CustomEditHandlers>? customEditHandlers;
-  final CustomAddHandler<T>? customAddHandler;
-  final CustomEditHandler<DataModel>? customEditHandler;
-  final Widget? empty;
-
+  /// A widget that provides a customizable CRUD (Create, Read, Update, Delete) table for managing data models.
+  ///
+  /// The [CRUDTable] widget displays data in a table format and provides options for
+  /// editing, deleting, and adding new entries. It uses a [PaginatedDataTable2] widget
+  /// to enable pagination, sorting, and filtering. This table is generic and works with
+  /// any model that extends [DataModel].
+  ///
+  /// ### Type Parameter:
+  /// - `T`: A type that extends [DataModel], representing the type of data displayed in the table.
+  ///
+  /// ### Constructor Parameters:
+  ///
+  /// #### Required:
+  /// - [headerTitle]: A [String] representing the title displayed at the top of the table.
+  /// - [repository]: A [DataRepository] that manages the data to be displayed in the table.
+  /// - [instance]: A function of type [ItemCreator] that creates an instance of the data model.
+  ///
+  /// #### Optional:
+  /// - [isEditable]: A [bool] that specifies if the table entries are editable. Defaults to `true`.
+  /// - [canAddEntry]: A [bool] that specifies if new entries can be added to the table. Defaults to `true`.
+  /// - [isDeletable]: A [bool] that specifies if the table entries are deletable. Defaults to `true`.
+  /// - [isLabelDisplayFirstColumn]: A [bool] that determines if the label is displayed in the first column. Defaults to `true`.
+  /// - [isDisplayRefreshButton]: A [bool] that determines if a refresh button is displayed. Defaults to `true`.
+  /// - [isQRDisplayable]: A [bool] that enables QR code display functionality for each entry. Defaults to `false`.
+  /// - [padding]: The padding around the table. Defaults to `EdgeInsets.all(12)`.
+  /// - [dataRowHeight]: A [double] representing the height of each data row. Defaults to [kMinInteractiveDimension].
+  /// - [minWidth]: A [double] that sets the minimum width of the table.
+  /// - [customDisplayHandlers]: A [Map] of custom handlers for displaying specific types of data.
+  /// - [customEditHandlers]: A [Map] of custom handlers for editing specific types of data.
+  /// - [onRowTap]: A callback function triggered when a row is tapped, receiving a [DataModel] as a parameter.
+  /// - [customAddHandler]: A custom handler for adding new entries.
+  /// - [customEditHandler]: A custom handler for editing existing entries.
+  /// - [jumpToFirstPage]: A [bool] that determines if the table should jump to the first page when data changes. Defaults to `false`.
+  /// - [empty]: A [Widget] displayed when there are no records in the table. Defaults to [_EmptyWidget].
+  ///
+  /// ### Example:
+  ///
+  /// ```dart
+  /// CRUDTable<DataModel>(
+  ///   headerTitle: 'User List',
+  ///   repository: userRepository,
+  ///   instance: () => UserModel(),
+  ///   customDisplayHandlers: {
+  ///     CustomType: (data, refresh) => CustomDisplayWidget(data, refresh),
+  ///   },
+  ///   customEditHandlers: {
+  ///     CustomType: (data, controller) => CustomEditWidget(data, controller),
+  ///   },
+  ///   customAddHandler: () async => await addHandler(),
+  ///   customEditHandler: (data) async => await editHandler(data),
+  /// );
+  /// ```
+  ///
+  /// This widget makes it easy to create dynamic tables with custom display and editing logic.
   const CRUDTable({
     Key? key,
     required this.headerTitle,
@@ -47,6 +84,8 @@ class CRUDTable<T extends DataModel> extends StatefulWidget {
     this.isEditable = true,
     this.canAddEntry = true,
     this.isDeletable = true,
+    this.isLabelDisplayFirstColumn = true,
+    this.isDisplayRefreshButton = true,
     this.isQRDisplayable = false,
     this.padding = const EdgeInsets.all(12),
     this.dataRowHeight = kMinInteractiveDimension,
@@ -56,21 +95,80 @@ class CRUDTable<T extends DataModel> extends StatefulWidget {
     this.onRowTap,
     this.customAddHandler,
     this.customEditHandler,
+    this.jumpToFirstPage = false,
     this.empty = const _EmptyWidget(),
   }) : super(key: key);
 
+  /// The title displayed at the top of the table.
+  final String headerTitle;
+
+  /// Whether the table entries are editable.
+  final bool isEditable;
+
+  /// Whether the table entries are deletable.
+  final bool isDeletable;
+
+  /// Whether the table entries can display QR codes.
+  final bool isQRDisplayable;
+
+  /// Whether new entries can be added to the table.
+  final bool canAddEntry;
+
+  /// Whether the table should jump to the first page when data changes.
+  final bool jumpToFirstPage;
+
+  /// The repository that manages the data for the table.
+  final DataRepository repository;
+
+  /// A function that creates an instance of the data model.
+  final ItemCreator<T> instance;
+
+  /// The padding around the table.
+  final EdgeInsetsGeometry padding;
+
+  /// The minimum width of the table.
+  final double? minWidth;
+
+  /// The height of each data row.
+  final double dataRowHeight;
+
+  /// A callback function that is triggered when a row is tapped.
+  final void Function(DataModel)? onRowTap;
+
+  /// A map of custom handlers for displaying specific types of data.
+  final Map<Type, CustomHandler>? customDisplayHandlers;
+
+  /// A map of custom handlers for editing specific types of data.
+  final Map<Type, CustomEditHandlers>? customEditHandlers;
+
+  /// A custom handler for adding new entries.
+  final CustomAddHandler<T>? customAddHandler;
+
+  /// A custom handler for editing existing entries.
+  final CustomEditHandler<DataModel>? customEditHandler;
+
+  /// A widget displayed when there are no records in the table.
+  final Widget? empty;
+
+  /// Whether to display the label in the first column of the table.
+  final bool isLabelDisplayFirstColumn;
+
+  /// Whether to display the refresh button.
+  final bool isDisplayRefreshButton;
+
   @override
-  _CRUDTableState createState() => _CRUDTableState();
+  _CRUDTableState<T> createState() => _CRUDTableState<T>();
 }
 
-class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
+class _CRUDTableState<T extends DataModel> extends State<CRUDTable<T>> {
   late final TableStateNotifier _notifier;
+  late final PaginatorController controller;
 
   @override
   void initState() {
     super.initState();
 
-    final displayParams = widget.instance.call().getDisplayParamsList();
+    final displayParams = widget.instance().getDisplayParamsList();
     final customHandlers = widget.customDisplayHandlers?.keys.toList() ?? [];
 
     displayParams.removeWhere((key, value) => customHandlers.contains(value));
@@ -79,6 +177,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
       repository: widget.repository,
       displayParameters: displayParams,
     );
+    controller = PaginatorController();
   }
 
   @override
@@ -87,61 +186,11 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
       valueListenable: _notifier,
       builder: (context, state, child) {
         if (state.tableDataSource != null) {
-          state.tableDataSource!.isEditable = widget.isEditable;
-          state.tableDataSource!.isDeletable = widget.isDeletable;
-          state.tableDataSource!.isQRDisplayable = widget.isQRDisplayable;
-          state.tableDataSource!.customHandlers = widget.customDisplayHandlers;
-          state.tableDataSource!.rowTapHandler = widget.onRowTap;
-          state.tableDataSource!.qrHandler = (model) async {
-            await showDialog(
-              context: context,
-              builder: (context) => QRView(
-                data: model,
-              ),
-            );
-          };
-          state.tableDataSource!.editHandler = (model) async {
-            DataModel? result;
-
-            if (widget.customEditHandler != null) {
-              result = await widget.customEditHandler!.call(model);
-            } else {
-              result = await showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (context) => EditView(
-                  type: EditType.update,
-                  data: model,
-                  dataTable: state.tableDataSource!.data,
-                  customEditHandlers: widget.customEditHandlers,
-                ),
-              );
-            }
-
-            if (result != null) {
-              _notifier.update(result);
-            }
-          };
-          state.tableDataSource!.deleteHandler = (model) async {
-            final result = await showConfirmationDialog(context);
-            if (result != null && result) {
-              _notifier.delete(model);
-            }
-          };
-          state.tableDataSource!.refreshHandler = () {
-            _notifier.init();
-          };
-
-          if (state.error != null) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              ScaffoldMessenger.of(context).removeCurrentSnackBar();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.error ?? ''),
-                ),
-              );
-            });
-          }
+          _updateTableDataSource(state);
+        }
+        // when record that created will show in first page
+        if ((state.updateData && state.isNewRecord) || widget.jumpToFirstPage) {
+          state.tableDataSource!.paginatorController.goToFirstPage();
         }
 
         return Stack(
@@ -149,14 +198,15 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
             Padding(
               padding: widget.padding,
               child: PaginatedDataTable2(
+                controller: controller,
                 header: Text(widget.headerTitle),
-                columns: buildDataColumns(),
-                actions: buildActions(filterBy: state.filterBy, dataTable: state.tableDataSource!.data),
+                columns: _buildDataColumns(),
+                source: state.tableDataSource!,
+                actions: _buildActions(state),
                 rowsPerPage: state.rowsPerPage,
                 onRowsPerPageChanged: _notifier.rowsPerPage,
                 sortColumnIndex: state.sortColumnIndex,
                 sortAscending: state.sortAscending,
-                source: state.tableDataSource!,
                 horizontalMargin: 20,
                 checkboxHorizontalMargin: 12,
                 columnSpacing: 0,
@@ -166,53 +216,73 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
                 empty: widget.empty,
               ),
             ),
-            if (state.updateData)
-              SizedBox(
-                height: 50,
-                child: Center(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepOrangeAccent,
-                      minimumSize: const Size(88, 36),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 14,
-                      ),
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(2)),
-                      ),
-                    ),
-                    onPressed: () => _notifier.init(),
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'New data available',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        SizedBox(width: 4),
-                        Icon(Icons.refresh, color: Colors.white),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            if (state.loading)
-              Container(
-                height: MediaQuery.of(context).size.height,
-                color: Colors.black45,
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
+            if (state.updateData && widget.isDisplayRefreshButton)
+              const _NewDataButton(),
+            if (state.loading) const _LoadingOverlay(),
           ],
         );
       },
     );
   }
 
-  List<Widget> buildActions({String? filterBy, List<DataModel>? dataTable}) {
-    final params = widget.instance.call().getDisplayParamsList();
+  void _updateTableDataSource(TableState state) {
+    state.tableDataSource!
+      ..isEditable = widget.isEditable
+      ..isDeletable = widget.isDeletable
+      ..isQRDisplayable = widget.isQRDisplayable
+      ..customHandlers = widget.customDisplayHandlers
+      ..rowTapHandler = widget.onRowTap
+      ..isLabelDisplayFirstColumn = widget.isLabelDisplayFirstColumn
+      ..paginatorController = controller
+      ..qrHandler = (model) async {
+        await showDialog(
+          context: context,
+          builder: (context) => QRView(data: model),
+        );
+      }
+      ..editHandler = (model) async {
+        DataModel? result;
+
+        if (widget.customEditHandler != null) {
+          result = await widget.customEditHandler!(model);
+        } else {
+          result = await showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => EditView(
+              type: EditType.update,
+              data: model,
+              dataTable: state.tableDataSource!.data,
+              customEditHandlers: widget.customEditHandlers,
+            ),
+          );
+        }
+
+        if (result != null) {
+          _notifier.update(result);
+        }
+      }
+      ..deleteHandler = (model) async {
+        final result = await showConfirmationDialog(context);
+        if (result != null && result) {
+          _notifier.delete(model);
+        }
+      }
+      ..refreshHandler = () {
+        _notifier.init();
+      };
+
+    if (state.error != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context)
+          ..removeCurrentSnackBar()
+          ..showSnackBar(SnackBar(content: Text(state.error ?? '')));
+      });
+    }
+  }
+
+  List<Widget> _buildActions(TableState state) {
+    final params = widget.instance().getDisplayParamsList();
     final customHandlers = widget.customDisplayHandlers?.keys.toList() ?? [];
 
     params.removeWhere((key, value) => customHandlers.contains(value));
@@ -229,12 +299,13 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
     return [
       DropdownButton<String>(
         items: dropDownItems,
-        value: filterBy,
+        value: state.filterBy,
         onChanged: (val) => _notifier.setFilterKey(val!),
       ),
       SizedBox(
         width: 150,
         child: TextField(
+          controller: _notifier.filterTextController,
           decoration: const InputDecoration(
             labelText: 'Filter',
             hintText: 'Filter',
@@ -254,15 +325,15 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
             DataModel? result;
 
             if (widget.customAddHandler != null) {
-              result = await widget.customAddHandler!.call();
+              result = await widget.customAddHandler!();
             } else {
               result = await showDialog(
                 context: context,
                 barrierDismissible: false,
                 builder: (context) => EditView(
                   type: EditType.add,
-                  data: widget.instance.call(),
-                  dataTable: dataTable!,
+                  data: widget.instance(),
+                  dataTable: state.tableDataSource!.data,
                   customEditHandlers: widget.customEditHandlers,
                 ),
               );
@@ -276,9 +347,9 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
     ];
   }
 
-  List<DataColumn> buildDataColumns() {
+  List<DataColumn> _buildDataColumns() {
     final List<DataColumn> columns = [];
-    final params = widget.instance.call().getDisplayParamsList();
+    final params = widget.instance().getDisplayParamsList();
 
     params.forEach(
       (element, type) {
@@ -305,8 +376,9 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
         const DataColumn2(label: Text('Actions'), size: ColumnSize.S),
       );
     }
-
-    columns.insert(0, const DataColumn2(label: Text(''), size: ColumnSize.S));
+    if (widget.isLabelDisplayFirstColumn) {
+      columns.insert(0, const DataColumn2(label: Text(''), size: ColumnSize.S));
+    }
 
     return columns;
   }
@@ -318,5 +390,61 @@ class _EmptyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(child: Text('No records'));
+  }
+}
+
+class _NewDataButton extends StatelessWidget {
+  const _NewDataButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 50,
+      child: Center(
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.deepOrangeAccent,
+            minimumSize: const Size(88, 36),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 14,
+            ),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(2)),
+            ),
+          ),
+          onPressed: () => context
+              .findAncestorStateOfType<_CRUDTableState>()
+              ?._notifier
+              .init(),
+          child: const Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'New data available',
+                style: TextStyle(color: Colors.white),
+              ),
+              SizedBox(width: 4),
+              Icon(Icons.refresh, color: Colors.white),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LoadingOverlay extends StatelessWidget {
+  const _LoadingOverlay({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      color: Colors.black45,
+      child: const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
   }
 }

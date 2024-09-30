@@ -2,8 +2,9 @@ import 'dart:convert';
 
 import 'package:crud_table/crud_table.dart';
 import 'package:crud_table/model/data_model.dart';
+import 'package:crud_table/util/component_type.dart';
 import 'package:crud_table/util/edit_utils.dart';
-import 'package:crud_table/util/strings.dart';
+import 'package:crud_table/util/validator.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -13,11 +14,53 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 enum EditType { add, update }
 
 class EditView<T extends DataModel> extends StatefulWidget {
+  /// The type of editing operation (e.g., create, update, delete).
   final EditType type;
+
+  /// The data model instance of type [T] that is being edited.
   final T data;
+
+  /// A list of data models that includes the data being edited.
   final List<T> dataTable;
+
+  /// A map of custom handlers for editing specific data types.
   final Map<Type, CustomEditHandlers>? customEditHandlers;
 
+  /// A widget that provides an interface for editing a specific data model entry.
+  ///
+  /// The [EditView] widget is designed to edit a single entry of type [T] from a table of data models.
+  /// It can handle different types of editing through the [EditType] enum and supports custom
+  /// editing handlers for specific data types. The widget can be customized to manage complex
+  /// editing logic with a combination of built-in and custom handlers.
+  ///
+  /// ### Type Parameter:
+  /// - `T`: A type that extends [DataModel], representing the type of data being edited.
+  ///
+  /// ### Constructor Parameters:
+  ///
+  /// #### Required:
+  /// - [type]: The [EditType] representing the type of editing operation (e.g., create, update).
+  /// - [data]: The instance of type [T] that holds the data being edited.
+  /// - [dataTable]: A [List] of data entries, including the current data being edited.
+  ///
+  /// #### Optional:
+  /// - [customEditHandlers]: A map of custom handlers for editing specific types of data. The key is
+  ///   the type of data and the value is the associated [CustomEditHandlers].
+  ///
+  /// ### Example:
+  ///
+  /// ```dart
+  /// EditView<UserModel>(
+  ///   type: EditType.update,
+  ///   data: userData,
+  ///   dataTable: userDataList,
+  ///   customEditHandlers: {
+  ///     CustomFieldType: (data, controller) => CustomFieldEditWidget(data, controller),
+  ///   },
+  /// );
+  /// ```
+  ///
+  /// This widget is part of the CRUD system and allows for flexible editing of data models.
   const EditView({
     Key? key,
     required this.type,
@@ -62,7 +105,7 @@ class _EditViewState extends State<EditView> {
 
         bool enabled = true;
 
-        if (widget.type == EditType.update && key == Strings.promoCode) {
+        if (widget.type == EditType.update && key == ComponentType.promoCode) {
           enabled = false;
         }
 
@@ -138,12 +181,15 @@ class _EditViewState extends State<EditView> {
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       if (widget.type == EditType.add &&
-                          _formControllers.containsKey(Strings.promoCode) &&
+                          _formControllers
+                              .containsKey(ComponentType.promoCode) &&
                           widget.dataTable
                                   .where(
                                     (element) =>
-                                        element.toMap()[Strings.promoCode] ==
-                                        _formControllers[Strings.promoCode]!
+                                        element
+                                            .toMap()[ComponentType.promoCode] ==
+                                        _formControllers[
+                                                ComponentType.promoCode]!
                                             .value
                                             .text,
                                   )
@@ -186,7 +232,7 @@ class _EditViewState extends State<EditView> {
   }
 }
 
-class TextFieldWidget extends StatelessWidget {
+class TextFieldWidget extends StatefulWidget {
   final String keyType;
   final Type type;
   final dynamic data;
@@ -205,19 +251,49 @@ class TextFieldWidget extends StatelessWidget {
     this.enabled,
   }) : super(key: key);
 
+  @override
+  State<TextFieldWidget> createState() => _TextFieldWidgetState();
+}
+
+class _TextFieldWidgetState extends State<TextFieldWidget> {
+  bool passwordVisible = false;
   Widget textField() {
     return TextFormField(
-      enabled: enabled ?? true,
-      controller: textEditingController,
+      enabled: widget.enabled ?? true,
+      controller: widget.textEditingController,
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      keyboardType: type == num ? TextInputType.number : TextInputType.text,
+      keyboardType:
+          widget.type == num ? TextInputType.number : TextInputType.text,
+      obscureText: (widget.keyType == ComponentType.passwordTypeUpperCase ||
+              widget.keyType == ComponentType.passwordTypeLowerCase) &&
+          !passwordVisible,
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
-        labelText: keyType,
+        errorMaxLines: 3,
+        labelText: widget.keyType,
+        suffixIcon: widget.keyType == ComponentType.passwordTypeUpperCase ||
+                widget.keyType == ComponentType.passwordTypeLowerCase
+            ? IconButton(
+                icon: Icon(
+                  passwordVisible ? Icons.visibility : Icons.visibility_off,
+                ),
+                onPressed: () {
+                  setState(() {
+                    passwordVisible = !passwordVisible;
+                  });
+                },
+              )
+            : null,
       ),
       validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter some text';
+        if (widget.keyType == ComponentType.passwordTypeUpperCase ||
+            widget.keyType == ComponentType.passwordTypeLowerCase) {
+          return Validator.validatePassword(value);
+        }
+        if ((widget.keyType == ComponentType.emailTypeUpperCase ||
+                widget.keyType == ComponentType.emailTypeLowerCase) &&
+            !Validator.validateEmail(value)) {
+          return 'Please enter a valid email address';
         }
         return null;
       },
@@ -227,10 +303,10 @@ class TextFieldWidget extends StatelessWidget {
   Widget dateTimeTextField() {
     return DateTimePicker(
       type: DateTimePickerType.dateTime,
-      controller: textEditingController,
+      controller: widget.textEditingController,
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
-        labelText: keyType,
+        labelText: widget.keyType,
         prefixIcon: const Icon(Icons.event),
       ),
       firstDate: DateTime(2020),
@@ -245,7 +321,7 @@ class TextFieldWidget extends StatelessWidget {
   }
 
   Widget mapTextField(BuildContext context) {
-    LatLng? location = data;
+    LatLng? location = widget.data;
     late GoogleMapController controller;
 
     return StatefulBuilder(
@@ -264,7 +340,7 @@ class TextFieldWidget extends StatelessWidget {
               'longitude': '${result.longitude}',
             };
 
-            textEditingController.text = json.encode(data);
+            widget.textEditingController.text = json.encode(data);
             controller.moveCamera(CameraUpdate.newLatLng(result));
             setState(() => location = result);
           }
@@ -309,13 +385,13 @@ class TextFieldWidget extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             TextFormField(
-              controller: textEditingController,
+              controller: widget.textEditingController,
               enableInteractiveSelection: false,
               readOnly: true,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
-                labelText: keyType,
+                labelText: widget.keyType,
                 prefixIcon: const Icon(Icons.location_pin),
               ),
               onTap: onTap,
@@ -334,11 +410,13 @@ class TextFieldWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (customEditHandlers != null && customEditHandlers!.containsKey(type)) {
-      return customEditHandlers![type]!.call(data, textEditingController);
+    if (widget.customEditHandlers != null &&
+        widget.customEditHandlers!.containsKey(widget.type)) {
+      return widget.customEditHandlers![widget.type]!
+          .call(widget.data, widget.textEditingController);
     }
 
-    switch (type) {
+    switch (widget.type) {
       case DateTime:
         return dateTimeTextField();
       case LatLng:
