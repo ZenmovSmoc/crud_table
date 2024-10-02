@@ -16,15 +16,35 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$TableState<T extends DataModel> {
+  /// Number of records displayed on page
   int get rowsPerPage => throw _privateConstructorUsedError;
+
+  /// column position is sorted
   int get sortColumnIndex => throw _privateConstructorUsedError;
+
+  /// Flag to check whether sorted by ASC or not
   bool get sortAscending => throw _privateConstructorUsedError;
+
+  /// Flag to check record is updated or created
   bool get updateData => throw _privateConstructorUsedError;
+
+  /// Loading progress indicator
   bool get loading => throw _privateConstructorUsedError;
+
+  /// [isNewRecord] Flag to check if record is newly created
+  bool get isNewRecord => throw _privateConstructorUsedError;
+
+  /// Filter by
   String? get filterBy => throw _privateConstructorUsedError;
+
+  /// filter Text
   String? get filterText => throw _privateConstructorUsedError;
+
+  /// DataSource
   DataSource<DataModel>? get tableDataSource =>
       throw _privateConstructorUsedError;
+
+  /// error
   String? get error => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -44,6 +64,7 @@ abstract class $TableStateCopyWith<T extends DataModel, $Res> {
       bool sortAscending,
       bool updateData,
       bool loading,
+      bool isNewRecord,
       String? filterBy,
       String? filterText,
       DataSource<DataModel>? tableDataSource,
@@ -68,6 +89,7 @@ class _$TableStateCopyWithImpl<T extends DataModel, $Res,
     Object? sortAscending = null,
     Object? updateData = null,
     Object? loading = null,
+    Object? isNewRecord = null,
     Object? filterBy = freezed,
     Object? filterText = freezed,
     Object? tableDataSource = freezed,
@@ -93,6 +115,10 @@ class _$TableStateCopyWithImpl<T extends DataModel, $Res,
       loading: null == loading
           ? _value.loading
           : loading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isNewRecord: null == isNewRecord
+          ? _value.isNewRecord
+          : isNewRecord // ignore: cast_nullable_to_non_nullable
               as bool,
       filterBy: freezed == filterBy
           ? _value.filterBy
@@ -128,6 +154,7 @@ abstract class _$$TableStateImplCopyWith<T extends DataModel, $Res>
       bool sortAscending,
       bool updateData,
       bool loading,
+      bool isNewRecord,
       String? filterBy,
       String? filterText,
       DataSource<DataModel>? tableDataSource,
@@ -150,6 +177,7 @@ class __$$TableStateImplCopyWithImpl<T extends DataModel, $Res>
     Object? sortAscending = null,
     Object? updateData = null,
     Object? loading = null,
+    Object? isNewRecord = null,
     Object? filterBy = freezed,
     Object? filterText = freezed,
     Object? tableDataSource = freezed,
@@ -175,6 +203,10 @@ class __$$TableStateImplCopyWithImpl<T extends DataModel, $Res>
       loading: null == loading
           ? _value.loading
           : loading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isNewRecord: null == isNewRecord
+          ? _value.isNewRecord
+          : isNewRecord // ignore: cast_nullable_to_non_nullable
               as bool,
       filterBy: freezed == filterBy
           ? _value.filterBy
@@ -207,33 +239,56 @@ class _$TableStateImpl<T extends DataModel>
       required this.sortAscending,
       required this.updateData,
       required this.loading,
+      this.isNewRecord = false,
       this.filterBy,
       this.filterText,
       this.tableDataSource,
       this.error});
 
+  /// Number of records displayed on page
   @override
   final int rowsPerPage;
+
+  /// column position is sorted
   @override
   final int sortColumnIndex;
+
+  /// Flag to check whether sorted by ASC or not
   @override
   final bool sortAscending;
+
+  /// Flag to check record is updated or created
   @override
   final bool updateData;
+
+  /// Loading progress indicator
   @override
   final bool loading;
+
+  /// [isNewRecord] Flag to check if record is newly created
+  @override
+  @JsonKey()
+  final bool isNewRecord;
+
+  /// Filter by
   @override
   final String? filterBy;
+
+  /// filter Text
   @override
   final String? filterText;
+
+  /// DataSource
   @override
   final DataSource<DataModel>? tableDataSource;
+
+  /// error
   @override
   final String? error;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'TableState<$T>(rowsPerPage: $rowsPerPage, sortColumnIndex: $sortColumnIndex, sortAscending: $sortAscending, updateData: $updateData, loading: $loading, filterBy: $filterBy, filterText: $filterText, tableDataSource: $tableDataSource, error: $error)';
+    return 'TableState<$T>(rowsPerPage: $rowsPerPage, sortColumnIndex: $sortColumnIndex, sortAscending: $sortAscending, updateData: $updateData, loading: $loading, isNewRecord: $isNewRecord, filterBy: $filterBy, filterText: $filterText, tableDataSource: $tableDataSource, error: $error)';
   }
 
   @override
@@ -246,6 +301,7 @@ class _$TableStateImpl<T extends DataModel>
       ..add(DiagnosticsProperty('sortAscending', sortAscending))
       ..add(DiagnosticsProperty('updateData', updateData))
       ..add(DiagnosticsProperty('loading', loading))
+      ..add(DiagnosticsProperty('isNewRecord', isNewRecord))
       ..add(DiagnosticsProperty('filterBy', filterBy))
       ..add(DiagnosticsProperty('filterText', filterText))
       ..add(DiagnosticsProperty('tableDataSource', tableDataSource))
@@ -266,6 +322,8 @@ class _$TableStateImpl<T extends DataModel>
             (identical(other.updateData, updateData) ||
                 other.updateData == updateData) &&
             (identical(other.loading, loading) || other.loading == loading) &&
+            (identical(other.isNewRecord, isNewRecord) ||
+                other.isNewRecord == isNewRecord) &&
             (identical(other.filterBy, filterBy) ||
                 other.filterBy == filterBy) &&
             (identical(other.filterText, filterText) ||
@@ -283,6 +341,7 @@ class _$TableStateImpl<T extends DataModel>
       sortAscending,
       updateData,
       loading,
+      isNewRecord,
       filterBy,
       filterText,
       tableDataSource,
@@ -302,28 +361,51 @@ abstract class _TableState<T extends DataModel> implements TableState<T> {
       required final bool sortAscending,
       required final bool updateData,
       required final bool loading,
+      final bool isNewRecord,
       final String? filterBy,
       final String? filterText,
       final DataSource<DataModel>? tableDataSource,
       final String? error}) = _$TableStateImpl<T>;
 
   @override
+
+  /// Number of records displayed on page
   int get rowsPerPage;
   @override
+
+  /// column position is sorted
   int get sortColumnIndex;
   @override
+
+  /// Flag to check whether sorted by ASC or not
   bool get sortAscending;
   @override
+
+  /// Flag to check record is updated or created
   bool get updateData;
   @override
+
+  /// Loading progress indicator
   bool get loading;
   @override
+
+  /// [isNewRecord] Flag to check if record is newly created
+  bool get isNewRecord;
+  @override
+
+  /// Filter by
   String? get filterBy;
   @override
+
+  /// filter Text
   String? get filterText;
   @override
+
+  /// DataSource
   DataSource<DataModel>? get tableDataSource;
   @override
+
+  /// error
   String? get error;
   @override
   @JsonKey(ignore: true)
