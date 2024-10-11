@@ -9,6 +9,7 @@ import 'package:crud_table/widgets/edit_view.dart';
 import 'package:crud_table/widgets/qr_view.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 typedef ItemCreator<S> = S Function();
 typedef CustomHandler<T extends DataModel> = DataCell Function(
@@ -97,6 +98,11 @@ class CRUDTable<T extends DataModel> extends StatefulWidget {
     this.customEditHandler,
     this.jumpToFirstPage = false,
     this.empty = const _EmptyWidget(),
+    this.onSelectedStartDay,
+    this.onSelectedEndDay,
+    this.startDay,
+    this.endDay,
+    this.isFetchInRangeDay = false,
   }) : super(key: key);
 
   /// The title displayed at the top of the table.
@@ -156,6 +162,16 @@ class CRUDTable<T extends DataModel> extends StatefulWidget {
   /// Whether to display the refresh button.
   final bool isDisplayRefreshButton;
 
+  final DateTime? startDay;
+
+  final DateTime? endDay;
+
+  final VoidCallback? onSelectedStartDay;
+
+  final VoidCallback? onSelectedEndDay;
+
+  final bool isFetchInRangeDay;
+
   @override
   _CRUDTableState<T> createState() => _CRUDTableState<T>();
 }
@@ -163,11 +179,15 @@ class CRUDTable<T extends DataModel> extends StatefulWidget {
 class _CRUDTableState<T extends DataModel> extends State<CRUDTable<T>> {
   late final TableStateNotifier _notifier;
   late final PaginatorController controller;
+  final startDayController = TextEditingController();
+
+  final endDayController = TextEditingController();
+
+  String formatDate = 'yyyy/MM/dd';
 
   @override
   void initState() {
     super.initState();
-
     final displayParams = widget.instance().getDisplayParamsList();
     final customHandlers = widget.customDisplayHandlers?.keys.toList() ?? [];
 
@@ -182,6 +202,23 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable<T>> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.startDay != null && widget.endDay != null) {
+      startDayController.text = DateFormat(formatDate).format(widget.startDay!);
+      endDayController.text = DateFormat(formatDate).format(widget.endDay!);
+      if (validateDate(widget.startDay!, widget.endDay!)) {
+        _notifier.retrieveDataWithinDateRange(
+          startDate: widget.startDay!,
+          endDate: widget.endDay!,
+        );
+      }
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.startDay != null &&
+          widget.endDay != null &&
+          validateDate(widget.startDay!, widget.endDay!)) {
+        showConfirmDialog(context, widget.startDay!, widget.endDay!);
+      }
+    });
     return ValueListenableBuilder<TableState>(
       valueListenable: _notifier,
       builder: (context, state, child) {
@@ -225,6 +262,28 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable<T>> {
     );
   }
 
+  void showConfirmDialog(
+      BuildContext context, DateTime startDate, DateTime endDate) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Invalid Date Range"),
+          content:
+              const Text("The start date cannot be later than the end date."),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _updateTableDataSource(TableState state) {
     state.tableDataSource!
       ..isEditable = widget.isEditable
@@ -234,6 +293,9 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable<T>> {
       ..rowTapHandler = widget.onRowTap
       ..isLabelDisplayFirstColumn = widget.isLabelDisplayFirstColumn
       ..paginatorController = controller
+      ..isFetchInRangeDay = widget.isFetchInRangeDay
+      ..startDay = widget.startDay
+      ..endDay = widget.endDay
       ..qrHandler = (model) async {
         await showDialog(
           context: context,
@@ -297,6 +359,34 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable<T>> {
         .toList();
 
     return [
+      if (widget.startDay != null)
+        SizedBox(
+          width: 150,
+          child: TextFormField(
+            controller: startDayController,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+            ),
+            readOnly: true,
+            onTap: () {
+              widget.onSelectedStartDay?.call();
+            },
+          ),
+        ),
+      if (widget.endDay != null)
+        SizedBox(
+          width: 150,
+          child: TextFormField(
+            controller: endDayController,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+            ),
+            readOnly: true,
+            onTap: () {
+              widget.onSelectedEndDay?.call();
+            },
+          ),
+        ),
       DropdownButton<String>(
         items: dropDownItems,
         value: state.filterBy,
@@ -316,7 +406,14 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable<T>> {
       ),
       IconButton(
         icon: const Icon(Icons.refresh),
-        onPressed: _notifier.init,
+        onPressed: !widget.isFetchInRangeDay
+            ? _notifier.init
+            : () {
+                _notifier.retrieveDataWithinDateRange(
+                  startDate: widget.startDay!,
+                  endDate: widget.endDay!,
+                );
+              },
       ),
       if (widget.canAddEntry)
         IconButton(
@@ -381,6 +478,28 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable<T>> {
     }
 
     return columns;
+  }
+
+  bool validateDate(DateTime startDay, DateTime endDay) {
+    final newStartDay = DateTime(
+      startDay.year,
+      startDay.month,
+      startDay.day,
+    );
+    final newEndDay = DateTime(
+      endDay.year,
+      endDay.month,
+      endDay.day,
+    );
+
+    return newStartDay.isBefore(newEndDay.add(const Duration(seconds: 1)));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    startDayController.dispose();
+    endDayController.dispose();
   }
 }
 

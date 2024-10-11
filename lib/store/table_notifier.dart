@@ -79,7 +79,14 @@ class TableStateNotifier<T extends DataModel>
 
     try {
       await repository.delete(data);
-      init();
+      if (value.tableDataSource!.isFetchingInRangeDay) {
+        await retrieveDataWithinDateRange(
+          startDate: value.tableDataSource!.startDay!,
+          endDate: value.tableDataSource!.endDay!,
+        );
+      } else {
+        init();
+      }
     } catch (ex) {
       handleException(ex);
     }
@@ -103,6 +110,29 @@ class TableStateNotifier<T extends DataModel>
     try {
       await repository.update(data);
       init();
+    } catch (ex) {
+      handleException(ex);
+    }
+  }
+
+  Future<void> retrieveDataWithinDateRange({
+    required DateTime startDate,
+    required DateTime endDate,
+  }) async {
+    setLoading();
+    try {
+      final data = await repository.fetchDataInRangeDay(
+        startDate: startDate,
+        endDate: endDate,
+      );
+      _data = data;
+      value = value.copyWith(
+        tableDataSource: DataSource<T>(_data, lastUpdateTime: _lastUpdateTime),
+        loading: false,
+        updateData: false,
+        isNewRecord: false,
+      );
+      _lastUpdateTime = DateTime.now();
     } catch (ex) {
       handleException(ex);
     }
