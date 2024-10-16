@@ -215,7 +215,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable<T>> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.startDay != null &&
           widget.endDay != null &&
-          validateDate(widget.startDay!, widget.endDay!)) {
+          !validateDate(widget.startDay!, widget.endDay!)) {
         showConfirmDialog(context, widget.startDay!, widget.endDay!);
       }
     });
@@ -263,7 +263,10 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable<T>> {
   }
 
   void showConfirmDialog(
-      BuildContext context, DateTime startDate, DateTime endDate) {
+    BuildContext context,
+    DateTime startDate,
+    DateTime endDate,
+  ) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
