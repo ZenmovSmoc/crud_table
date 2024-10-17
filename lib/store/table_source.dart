@@ -28,6 +28,7 @@ class DataSource<T extends DataModel> extends DataTableSource {
       _qrHandler; // Handler function for displaying QR codes for rows.
   late VoidCallback
       _refreshHandler; // Function to trigger a refresh of the table.
+  late VoidCallback _refreshOneRowHandler;
 
   // Optional handler for when a row is tapped.
   Function(T)? _onRowTap;
@@ -37,6 +38,12 @@ class DataSource<T extends DataModel> extends DataTableSource {
 
   // Controller for handling pagination of the table.
   late PaginatorController _controller;
+
+  late bool _isFetchInRangeDay;
+
+  late DateTime? startDay;
+
+  late DateTime? endDay;
 
   // Setter for the PaginatorController. Assigns the pagination controller for the data source.
   set paginatorController(PaginatorController controller) {
@@ -96,11 +103,18 @@ class DataSource<T extends DataModel> extends DataTableSource {
     _onRowTap = handler;
   }
 
+  set isFetchInRangeDay(bool value) {
+    _isFetchInRangeDay = value;
+  }
+
+  bool get isFetchingInRangeDay => _isFetchInRangeDay;
+
   @override
   DataRow? getRow(int index) {
     assert(index >= 0);
 
     final T item = data[index];
+    print("data: $item");
 
     return DataRow.byIndex(
       index: index,

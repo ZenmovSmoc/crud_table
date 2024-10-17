@@ -14,6 +14,13 @@ abstract class DataRepository<T extends DataModel> with DataRepositoryMixin<T> {
 
 mixin DataRepositoryMixin<T> {
   Future<List<T>> fetchWithSortCondition({String? sortCondition}) {
-    throw Exception();
+    throw UnimplementedError();
+  }
+
+  Future<List<T>> fetchDataInRangeDay({
+    required DateTime startDate,
+    required DateTime endDate,
+  }) {
+    throw UnimplementedError();
   }
 }
