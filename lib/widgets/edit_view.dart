@@ -4,7 +4,9 @@ import 'package:crud_table/crud_table.dart';
 import 'package:crud_table/model/data_model.dart';
 import 'package:crud_table/util/component_type.dart';
 import 'package:crud_table/util/edit_utils.dart';
+import 'package:crud_table/util/strings.dart';
 import 'package:crud_table/util/validator.dart';
+import 'package:crud_table/widgets/test.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -83,6 +85,8 @@ class _EditViewState extends State<EditView> {
   final List<Widget> widgets = [];
 
   bool isPromoCodeExist = false;
+  bool isFromAndToStationTheSame = false;
+  bool isFromAndToStationExisting = false;
 
   @override
   void initState() {
@@ -106,6 +110,12 @@ class _EditViewState extends State<EditView> {
         bool enabled = true;
 
         if (widget.type == EditType.update && key == ComponentType.promoCode) {
+          enabled = false;
+        } else if (widget.type == EditType.update &&
+            key == ComponentType.fromStation) {
+          enabled = false;
+        } else if (widget.type == EditType.update &&
+            key == ComponentType.toStation) {
           enabled = false;
         }
 
@@ -168,35 +178,46 @@ class _EditViewState extends State<EditView> {
               const SizedBox(height: 32),
               ...widgets,
               const SizedBox(height: 32),
-              if (isPromoCodeExist)
-                const Center(
-                  child: Text(
-                    "That promotional code already exists!",
-                    style: TextStyle(color: Colors.red),
-                  ),
-                ),
+              errorWidget(),
               const SizedBox(height: 32),
               Center(
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      if (widget.type == EditType.add &&
-                          _formControllers
-                              .containsKey(ComponentType.promoCode) &&
-                          widget.dataTable
-                                  .where(
-                                    (element) =>
-                                        element
-                                            .toMap()[ComponentType.promoCode] ==
-                                        _formControllers[
-                                                ComponentType.promoCode]!
-                                            .value
-                                            .text,
-                                  )
-                                  .length ==
-                              1) {
+                      // This will prevent the user from adding an existing promo code
+                      if (ValidateInput().isPromoCodeExist(
+                        type: widget.type,
+                        table: widget.dataTable,
+                        controllers: _formControllers,
+                      )) {
                         setState(() {
                           isPromoCodeExist = true;
+                          isFromAndToStationTheSame = false;
+                          isFromAndToStationExisting = false;
+                        });
+                      }
+                      // This will prevent user from adding or updating a record with same From Station and To Station
+                      else if (ValidateInput().isFromAndToStationNameTheSame(
+                        type: widget.type == EditType.add ||
+                            widget.type == EditType.update,
+                        controllers: _formControllers,
+                      )) {
+                        setState(() {
+                          isPromoCodeExist = false;
+                          isFromAndToStationTheSame = true;
+                          isFromAndToStationExisting = false;
+                        });
+                        // This will prevent user from adding or updating a record with same From Station and To Station that is existing in the DataTable
+                      } else if (ValidateInput().isFromAndToStationNameExist(
+                        type: widget.type == EditType.add ||
+                            widget.type == EditType.update,
+                        table: widget.dataTable,
+                        controllers: _formControllers,
+                      )) {
+                        setState(() {
+                          isPromoCodeExist = false;
+                          isFromAndToStationTheSame = false;
+                          isFromAndToStationExisting = true;
                         });
                       } else {
                         DataModel data = widget.data;
@@ -227,6 +248,24 @@ class _EditViewState extends State<EditView> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget errorWidget() {
+    String errMessage = "";
+    if (isPromoCodeExist) {
+      errMessage = Strings.existingPromoCodeErrorMessage;
+    } else if (isFromAndToStationTheSame) {
+      errMessage = Strings.fromAndToStationErrorMessage;
+    } else if (isFromAndToStationExisting) {
+      errMessage = Strings.existingFromAndToStationErrorMessage;
+    }
+
+    return Center(
+      child: Text(
+        errMessage,
+        style: const TextStyle(color: Colors.red),
       ),
     );
   }
