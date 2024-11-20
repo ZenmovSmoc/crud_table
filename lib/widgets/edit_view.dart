@@ -83,6 +83,7 @@ class _EditViewState extends State<EditView> {
   final List<Widget> widgets = [];
 
   bool isPromoCodeExist = false;
+  bool isUnlimitedPeriodOneExist = false;
 
   @override
   void initState() {
@@ -175,6 +176,13 @@ class _EditViewState extends State<EditView> {
                     style: TextStyle(color: Colors.red),
                   ),
                 ),
+              if (isUnlimitedPeriodOneExist)
+                const Center(
+                  child: Text(
+                    "The period used already exists on Unlimited Pass!",
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
               const SizedBox(height: 32),
               Center(
                 child: ElevatedButton(
@@ -198,14 +206,27 @@ class _EditViewState extends State<EditView> {
                         setState(() {
                           isPromoCodeExist = true;
                         });
-                      } else {
+                      }  else {
                         DataModel data = widget.data;
-
                         _formControllers.forEach((key, value) {
                           data = data.setParameter(key, value.text);
                         });
-
-                        Navigator.of(context).pop(data);
+                        if(widget.data.toString().contains(ComponentType.unlimitedPass)) {
+                          if(widget.dataTable.where((element) =>
+                            element.toMap()[ComponentType.unlimitedPassPeriod]?.toString().trim() ==
+                                _formControllers[ComponentType.unlimitedPassPeriod]!.value.text.trim()).length >= 1) {
+                            setState(() {
+                              isUnlimitedPeriodOneExist = true;
+                            });
+                          } else {
+                            setState(() {
+                              isUnlimitedPeriodOneExist = false;
+                            });
+                            Navigator.of(context).pop(data);
+                          }
+                        } else {
+                          Navigator.of(context).pop(data);
+                        }
                       }
                     }
                   },
