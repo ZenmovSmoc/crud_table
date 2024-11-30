@@ -26,6 +26,7 @@ class CRUDTable<T extends DataModel> extends StatefulWidget {
   final bool isEditable;
   final bool isDeletable;
   final bool isQRDisplayable;
+  final bool? filterCheckbox;
   final bool canAddEntry;
   final DataRepository repository;
   final ItemCreator<T> instance;
@@ -48,6 +49,7 @@ class CRUDTable<T extends DataModel> extends StatefulWidget {
     this.canAddEntry = true,
     this.isDeletable = true,
     this.isQRDisplayable = false,
+    this.filterCheckbox,
     this.padding = const EdgeInsets.all(12),
     this.dataRowHeight = kMinInteractiveDimension,
     this.customDisplayHandlers,
@@ -86,6 +88,7 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable> {
     return ValueListenableBuilder<TableState>(
       valueListenable: _notifier,
       builder: (context, state, child) {
+        _notifier.setFilterCheckbox(filterValue: widget.filterCheckbox);
         if (state.tableDataSource != null) {
           state.tableDataSource!.isEditable = widget.isEditable;
           state.tableDataSource!.isDeletable = widget.isDeletable;
