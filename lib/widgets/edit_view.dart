@@ -222,7 +222,6 @@ class _EditViewState extends State<EditView> {
                         });
                       } else {
                         DataModel data = widget.data;
-
                         _formControllers.forEach((key, value) {
                           data = data.setParameter(key, value.text);
                         });
@@ -242,8 +241,6 @@ class _EditViewState extends State<EditView> {
                         } else {
                           Navigator.of(context).pop(data);
                         }
-
-                        Navigator.of(context).pop(data);
                       }
                     }
                   },
