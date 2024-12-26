@@ -5,5 +5,7 @@ class Strings {
       "From Station and To Station should not be the same!";
   static const String existingFromAndToStationErrorMessage =
       "From Station and To Station are already existing!";
+  static const String unliPassPeriodExist =
+      "The period used already exists on Unlimited Pass!";
   static const String errorMessage = "Error Occured";
 }

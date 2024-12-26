@@ -197,13 +197,6 @@ class _EditViewState extends State<EditView> {
                           isFromAndToStationExisting = false;
                         });
                       }
-                      if(ValidateInput().containsUnlimitedPass(
-                          ticketType: widget.data.toString()
-                      )) {
-                        setState(() {
-                          isUnlimitedPeriodOneExist = true;
-                        });
-                      }
                       // This will prevent user from adding or updating a record with same From Station and To Station
                       else if (ValidateInput().isFromAndToStationNameTheSame(
                         type: widget.type == EditType.add ||
@@ -233,6 +226,22 @@ class _EditViewState extends State<EditView> {
                         _formControllers.forEach((key, value) {
                           data = data.setParameter(key, value.text);
                         });
+                        if(ValidateInput().containsUnlimitedPass(ticketType: widget.data.toString())) {
+                          if(widget.dataTable.where((element) =>
+                          element.toMap()[ComponentType.unlimitedPassPeriod]?.toString().trim() ==
+                              _formControllers[ComponentType.unlimitedPassPeriod]!.value.text.trim()).length >= 1) {
+                            setState(() {
+                              isUnlimitedPeriodOneExist = true;
+                            });
+                          } else {
+                            setState(() {
+                              isUnlimitedPeriodOneExist = false;
+                            });
+                            Navigator.of(context).pop(data);
+                          }
+                        } else {
+                          Navigator.of(context).pop(data);
+                        }
 
                         Navigator.of(context).pop(data);
                       }
@@ -268,6 +277,10 @@ class _EditViewState extends State<EditView> {
       errMessage = Strings.fromAndToStationErrorMessage;
     } else if (isFromAndToStationExisting) {
       errMessage = Strings.existingFromAndToStationErrorMessage;
+    }
+
+    if (isUnlimitedPeriodOneExist) {
+      errMessage = Strings.unliPassPeriodExist;
     }
 
     return Center(
