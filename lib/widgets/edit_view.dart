@@ -87,6 +87,7 @@ class _EditViewState extends State<EditView> {
   bool isPromoCodeExist = false;
   bool isFromAndToStationTheSame = false;
   bool isFromAndToStationExisting = false;
+  bool isUnlimitedPeriodOneExist = false;
 
   @override
   void initState() {
@@ -194,6 +195,13 @@ class _EditViewState extends State<EditView> {
                           isPromoCodeExist = true;
                           isFromAndToStationTheSame = false;
                           isFromAndToStationExisting = false;
+                        });
+                      }
+                      if(ValidateInput().containsUnlimitedPass(
+                          ticketType: widget.data.toString()
+                      )) {
+                        setState(() {
+                          isUnlimitedPeriodOneExist = true;
                         });
                       }
                       // This will prevent user from adding or updating a record with same From Station and To Station

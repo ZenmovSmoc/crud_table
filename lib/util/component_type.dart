@@ -8,4 +8,7 @@ class ComponentType {
 
   static const String fromStation = 'From Station';
   static const String toStation = 'To Station';
+
+  static const String unlimitedPass = 'UnlimitedPassTicketModel';
+  static const String unlimitedPassPeriod = 'Period';
 }

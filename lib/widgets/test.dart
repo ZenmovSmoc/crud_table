@@ -23,6 +23,12 @@ class ValidateInput {
             1;
   }
 
+  bool containsUnlimitedPass({
+    required String ticketType,
+  }) {
+    return ticketType.contains(ComponentType.unlimitedPass);
+  }
+
   bool isFromAndToStationNameTheSame({
     required bool type,
     required Map<String, TextEditingController> controllers,
