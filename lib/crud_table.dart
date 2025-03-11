@@ -234,23 +234,31 @@ class _CRUDTableState<T extends DataModel> extends State<CRUDTable<T>> {
           children: [
             Padding(
               padding: widget.padding,
-              child: PaginatedDataTable2(
-                controller: controller,
-                header: Text(widget.headerTitle),
-                columns: _buildDataColumns(),
-                source: state.tableDataSource!,
-                actions: _buildActions(state),
-                rowsPerPage: state.rowsPerPage,
-                onRowsPerPageChanged: _notifier.rowsPerPage,
-                sortColumnIndex: state.sortColumnIndex,
-                sortAscending: state.sortAscending,
-                horizontalMargin: 20,
-                checkboxHorizontalMargin: 12,
-                columnSpacing: 0,
-                minWidth: widget.minWidth,
-                dataRowHeight: widget.dataRowHeight,
-                showCheckboxColumn: false,
-                empty: widget.empty,
+              child: Theme(
+                data: ThemeData(
+                  cardTheme: const CardTheme(
+                    surfaceTintColor: Colors.white,
+                    color: Colors.white,
+                  ),
+                ),
+                child: PaginatedDataTable2(
+                  controller: controller,
+                  header: Text(widget.headerTitle),
+                  columns: _buildDataColumns(),
+                  source: state.tableDataSource!,
+                  actions: _buildActions(state),
+                  rowsPerPage: state.rowsPerPage,
+                  onRowsPerPageChanged: _notifier.rowsPerPage,
+                  sortColumnIndex: state.sortColumnIndex,
+                  sortAscending: state.sortAscending,
+                  horizontalMargin: 20,
+                  checkboxHorizontalMargin: 12,
+                  columnSpacing: 0,
+                  minWidth: widget.minWidth,
+                  dataRowHeight: widget.dataRowHeight,
+                  showCheckboxColumn: false,
+                  empty: widget.empty,
+                ),
               ),
             ),
             if (state.updateData && widget.isDisplayRefreshButton)
